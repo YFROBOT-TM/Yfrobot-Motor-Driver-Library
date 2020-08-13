@@ -15,8 +15,6 @@
 
 #include "MotorDriver_PCA9685.h"
 
-// #ifdef PCA9685_MotorDriver
-
 //#define ENABLE_DEBUG_OUTPUT
 
 /*!
@@ -329,6 +327,125 @@ void MotorDriver_PCA9685::setOscillatorFrequency(uint32_t freq) {
   _oscillator_freq = freq;
 }
 
+/*!
+ *  @brief set motor direction,
+ *  @param m1Dir: motor M1 direction, eg: 0 - M1 motor default direction ,1 - M1 motor reverse direction;
+ *  @param m2Dir: motor M2 direction;
+ *  @param m3Dir: motor M3 direction;
+ *  @param m4Dir: motor M4 direction;
+ */
+void MotorDriver_PCA9685::setMotorDirReverse(bool m1Dir, bool m2Dir, bool m3Dir, bool m4Dir) {
+  _MOTORM1REVERSE = m1Dir;
+  _MOTORM2REVERSE = m2Dir;
+  _MOTORM3REVERSE = m3Dir;
+  _MOTORM4REVERSE = m4Dir;
+}
+
+/*!
+ *  @brief set ALL motor direction,
+ *  @param MAllDir: motor all direction, eg: 0 - all motor default direction ,1 - all motor reverse direction;
+ */
+void MotorDriver_PCA9685::setMotorDirReverse(bool MAllDir) {
+  _MOTORMALLREVERSE = MAllDir;
+}
+
+/*!
+ *  @brief Drive single motor ,
+ *  @param motorNum: motor number, eg:1 - M1 motor ;
+ *  @param speed: speed: motor speed, range -4096 ~ 4096; 
+ */
+void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
+  initPin();
+  if(motorNum = 1){
+    if( _MOTORM1REVERSE || _MOTORMALLREVERSE)
+      speed = 0 - speed;
+    // MOTOR 1
+    if(speed > 0){
+      setPin(_M1IN1, 0, 0);
+      setPin(_M1IN2, 4096, 0);
+      setPin(_M1PWM, speed, 0);
+    }else if(speed < 0){
+      setPin(_M1IN1, 4096, 0);
+      setPin(_M1IN2, 0, 0);
+      setPin(_M1PWM, 0 - speed, 0);
+    }else{
+      setPin(_M1IN1, 0, 0);
+      setPin(_M1IN2, 0, 0);
+    }
+  } else if (motorNum = 2) {
+    if( _MOTORM2REVERSE || _MOTORMALLREVERSE)
+      speed = 0 - speed;
+    // MOTOR 2
+    if(speed > 0){
+      setPin(_M2IN1, 0, 0);
+      setPin(_M2IN2, 4096, 0);
+      setPin(_M2PWM, speed, 0);
+    }else if(speed < 0){
+      setPin(_M2IN1, 4096, 0);
+      setPin(_M2IN1, 0, 0);
+      setPin(_M2PWM, 0 - speed, 0);
+    }else{
+      setPin(_M2IN1, 0, 0);
+      setPin(_M2IN1, 0, 0);
+    }
+  } else if (motorNum = 3) {
+    if( _MOTORM3REVERSE || _MOTORMALLREVERSE)
+      speed = 0 - speed;
+    // MOTOR 3
+    if(speed > 0){
+      setPin(_M3IN1, 0, 0);
+      setPin(_M3IN1, 4096, 0);
+      setPin(_M3PWM, speed, 0);
+    }else if(speed < 0){
+      setPin(_M3IN1, 4096, 0);
+      setPin(_M3IN1, 0, 0);
+      setPin(_M3PWM, 0 - speed, 0);
+    }else{
+      setPin(_M3IN1, 0, 0);
+      setPin(_M3IN1, 0, 0);
+    }
+  } else if (motorNum = 4) {
+    if( _MOTORM4REVERSE || _MOTORMALLREVERSE)
+      speed = 0 - speed;
+    // MOTOR 4
+    if(speed > 0){
+      setPin(_M4IN1, 0, 0);
+      setPin(_M4IN1, 4096, 0);
+      setPin(_M4PWM, speed, 0);
+    }else if(speed < 0){
+      setPin(_M4IN1, 4096, 0);
+      setPin(_M4IN1, 0, 0);
+      setPin(_M4PWM, 0 - speed, 0);
+    }else{
+      setPin(_M4IN1, 0, 0);
+      setPin(_M4IN1, 0, 0);
+    }
+  } else {
+#ifdef ENABLE_DEBUG_OUTPUT
+    Serial.print("Error: Motor number error.");
+#endif
+  }
+}
+
+/*!
+ *  @brief Drive motor ,
+ *  @param speedM1: M1 motor speed, range -4096 ~ 4096;
+ *  @param speedM2: M2 motor speed, range -4096 ~ 4096; 
+ *  @param speedM3: M3 motor speed, range -4096 ~ 4096; 
+ *  @param speedM4: M4 motor speed, range -4096 ~ 4096; 
+ */
+void MotorDriver_PCA9685::setMotor(int16_t speedM1,int16_t speedM2,int16_t speedM3,int16_t speedM4) {
+  initPin();
+  // MOTOR 1
+  setSingleMotor(1, speedM1);
+  // MOTOR 2
+  setSingleMotor(2, speedM2);
+  // MOTOR 3
+  setSingleMotor(3, speedM3);
+  // MOTOR 4
+  setSingleMotor(4, speedM4);
+}
+
 /******************* Low level I2C interface */
 uint8_t MotorDriver_PCA9685::read8(uint8_t addr) {
   _i2c->beginTransmission(_i2caddr);
@@ -346,15 +463,20 @@ void MotorDriver_PCA9685::write8(uint8_t addr, uint8_t d) {
   _i2c->endTransmission();
 }
 
-// #elif L298P_MotorDriver
-
-// #elif MD_MotorDriver
-
-// #elif PMR3_MotorDriver
-
-// #elif DRV8833_MotorDriver
-
-// #elif TB6612_MotorDriver
-
-// #endif
+void MotorDriver_PCA9685::initPin(){
+  if(!_inited){
+    _M1IN1 = 0;
+    _M1IN2 = 1;
+    _M1PWM = 2;
+    _M2IN1 = 3;
+    _M2IN2 = 4;
+    _M2PWM = 5;
+    _M3IN1 = 8;
+    _M3IN2 = 9;
+    _M3PWM = 10;
+    _M4IN1 = 11;
+    _M4IN2 = 12;
+    _M4PWM = 13;
+  }
+}
 

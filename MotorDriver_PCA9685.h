@@ -48,13 +48,30 @@
 #define MODE1_RESTART 0x80 /**< Restart enabled */
 // MODE2 bits
 #define MODE2_OUTNE_0 0x01 /**< Active LOW output enable input */
-#define MODE2_OUTNE_1                                                          \
-  0x02 /**< Active LOW output enable input - high impedience */
+#define MODE2_OUTNE_1 0x02 /**< Active LOW output enable input - high impedience */
 #define MODE2_OUTDRV 0x04 /**< totem pole structure vs open-drain */
 #define MODE2_OCH 0x08    /**< Outputs change on ACK vs STOP */
 #define MODE2_INVRT 0x10  /**< Output logic state inverted */
 
 #define PCA9685_I2C_ADDRESS 0x40      /**< Default PCA9685 I2C Slave Address */
+/*
+    In theory the internal oscillator (clock) is 25MHz but it really isn't that precise.
+    You can 'calibrate' this by tweaking this number until you get the PWM update frequency you're expecting!
+    The int.osc. for the PCA9685 chip is a range between about 23-27MHz and is used for calculating things like writeMicroseconds()
+    Analog servos run at ~50 Hz updates, It is importaint to use an oscilloscope in setting the int.osc frequency for the I2C PCA9685 chip.
+      1) Attach the oscilloscope to one of the PWM signal pins and ground on the I2C PCA9685 chip you are setting the value for.
+      2) Adjust setOscillatorFrequency() until the PWM update frequency is the expected value (50Hz for most ESCs)
+    Setting the value here is specific to each individual I2C PCA9685 chip and affects the calculations for the PWM update frequency.
+    Failure to correctly set the int.osc value will cause unexpected PWM results
+    理论上，内部振荡器（时钟）是25MHz，但实际上不是那么精确。
+    你可以通过调整这个数字来“校准”这个数字，直到你得到你期望的PWM更新频率！
+    这个内景osc. 对于PCA9685芯片来说，它的范围在23-27MHz之间，用于计算writeMiroseconds（）
+    模拟伺服运行在~50赫兹更新，这是很重要的使用示波器设置内景oscI2C PCA9685芯片的频率。
+      1） 将示波器连接到其中一个PWM信号引脚上，并在I2C PCA9685芯片上接地。
+      2） 调整setOscillatorFrequency()，直到PWM更新频率为预期值（大多数ESC为50赫兹）
+    此处的值设置是针对每个I2C PCA9685芯片的，它会影响PWM更新频率的计算。
+    未能正确设置内景osc值将导致意外的PWM结果
+*/
 #define FREQUENCY_OSCILLATOR 25000000 /**< Int. osc. frequency in datasheet */
 
 #define PCA9685_PRESCALE_MIN 3   /**< minimum prescale value */
@@ -67,7 +84,6 @@
  */
 class MotorDriver_PCA9685 {
 public:
-  #ifdef PCA9685_MotorDriver
   MotorDriver_PCA9685();
   MotorDriver_PCA9685(const uint8_t addr);
   MotorDriver_PCA9685(const uint8_t addr, TwoWire &i2c);
@@ -86,27 +102,40 @@ public:
 
   void setOscillatorFrequency(uint32_t freq);
   uint32_t getOscillatorFrequency(void);
-#elif L298P_MotorDriver
 
-#elif MD_MotorDriver
-
-#elif PMR3_MotorDriver
-
-#elif DRV8833_MotorDriver
-
-#elif TB6612_MotorDriver
-
-#endif
+  void setSingleMotor(int8_t motorNum, int16_t speed);  // 驱动单个电机
+  void setMotor(int16_t speedM1,int16_t speedM2,int16_t speedM3,int16_t speedM4);  // 驱动电机
+  void setMotorDirReverse(bool m1Dir, bool m2Dir, bool m3Dir, bool m4Dir);
+  void setMotorDirReverse(bool MAllDir);
 
 private:
   uint8_t _i2caddr;
   TwoWire *_i2c;
 
+  bool _inited; // 是否已经初始化引脚
+  uint8_t _M1IN1;  // 电机M1 输入1
+  uint8_t _M1IN2;  // 电机M1 输入2
+  uint8_t _M1PWM;  // 电机M1 PWM
+  uint8_t _M2IN1;  // 电机M2 输入1
+  uint8_t _M2IN2;  // 电机M2 输入2
+  uint8_t _M2PWM;  // 电机M2 PWM
+  uint8_t _M3IN1;  // 电机M3 输入1
+  uint8_t _M3IN2;  // 电机M3 输入2
+  uint8_t _M3PWM;  // 电机M3 PWM
+  uint8_t _M4IN1;  // 电机M4 输入1
+  uint8_t _M4IN2;  // 电机M4 输入2
+  uint8_t _M4PWM;  // 电机M4 PWM
+
+  bool _MOTORM1REVERSE = 0; /** motor M1 reverse 电机M1反向 **/
+  bool _MOTORM2REVERSE = 0; /** motor M2 reverse 电机M2反向 **/
+  bool _MOTORM3REVERSE = 0; /** motor M3 reverse 电机M3反向 **/
+  bool _MOTORM4REVERSE = 0; /** motor M4 reverse 电机M4反向 **/
+  bool _MOTORMALLREVERSE = 0; /** all motor reverse 所有电机反向 **/
+
   uint32_t _oscillator_freq;
   uint8_t read8(uint8_t addr);
   void write8(uint8_t addr, uint8_t d);
+  void initPin();
 };
-
-
 
 #endif

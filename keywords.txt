@@ -2,7 +2,7 @@
 # Classes, datatypes (KEYWORD1)
 #######################################
 
-MotorDriver_Yfrobot	KEYWORD1
+MotorDriver_PCA9685	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -22,6 +22,9 @@ readPrescale	KEYWORD2
 writeMicroseconds	KEYWORD2
 setOscillatorFrequency	KEYWORD2
 getOscillatorFrequency	KEYWORD2
+setSingleMotor	KEYWORD2
+setMotor	KEYWORD2
+setMotorDirReverse	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
