@@ -356,7 +356,7 @@ void MotorDriver_PCA9685::setMotorDirReverse(bool MAllDir) {
  */
 void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
   initPin();
-  if(motorNum = 1){
+  if(motorNum == 1){
     if( _MOTORM1REVERSE || _MOTORMALLREVERSE)
       speed = 0 - speed;
     // MOTOR 1
@@ -372,7 +372,7 @@ void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
       setPin(_M1IN1, 0, 0);
       setPin(_M1IN2, 0, 0);
     }
-  } else if (motorNum = 2) {
+  } else if (motorNum == 2) {
     if( _MOTORM2REVERSE || _MOTORMALLREVERSE)
       speed = 0 - speed;
     // MOTOR 2
@@ -388,7 +388,7 @@ void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
       setPin(_M2IN1, 0, 0);
       setPin(_M2IN1, 0, 0);
     }
-  } else if (motorNum = 3) {
+  } else if (motorNum == 3) {
     if( _MOTORM3REVERSE || _MOTORMALLREVERSE)
       speed = 0 - speed;
     // MOTOR 3
@@ -404,7 +404,7 @@ void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
       setPin(_M3IN1, 0, 0);
       setPin(_M3IN1, 0, 0);
     }
-  } else if (motorNum = 4) {
+  } else if (motorNum == 4) {
     if( _MOTORM4REVERSE || _MOTORMALLREVERSE)
       speed = 0 - speed;
     // MOTOR 4
