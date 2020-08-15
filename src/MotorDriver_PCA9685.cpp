@@ -12,8 +12,8 @@
  *  BSD license, all text above must be included in any redistribution
  */
 
-
 #include "MotorDriver_PCA9685.h"
+
 #include <Wire.h>
 
 //#define ENABLE_DEBUG_OUTPUT
@@ -40,8 +40,7 @@ MotorDriver_PCA9685::MotorDriver_PCA9685(const uint8_t addr)
  *  @param  i2c  A reference to a 'TwoWire' object that we'll use to communicate
  *  with
  */
-MotorDriver_PCA9685::MotorDriver_PCA9685(const uint8_t addr,
-                                                 TwoWire &i2c)
+MotorDriver_PCA9685::MotorDriver_PCA9685(const uint8_t addr, TwoWire &i2c)
     : _i2caddr(addr), _i2c(&i2c) {}
 
 /*!
@@ -52,6 +51,7 @@ MotorDriver_PCA9685::MotorDriver_PCA9685(const uint8_t addr,
 void MotorDriver_PCA9685::begin(uint8_t prescale) {
   _i2c->begin();
   reset();
+  _inited = false;  // 重置初始化引脚标志
   if (prescale) {
     setExtClk(prescale);
   } else {
@@ -60,7 +60,7 @@ void MotorDriver_PCA9685::begin(uint8_t prescale) {
   }
   // set the default internal frequency
   setOscillatorFrequency(FREQUENCY_OSCILLATOR);
-  initPin();
+  initPin();  // 初始化引脚通道
 }
 
 /*!
@@ -76,9 +76,9 @@ void MotorDriver_PCA9685::reset() {
  */
 void MotorDriver_PCA9685::sleep() {
   uint8_t awake = read8(PCA9685_MODE1);
-  uint8_t sleep = awake | MODE1_SLEEP; // set sleep bit high
+  uint8_t sleep = awake | MODE1_SLEEP;  // set sleep bit high
   write8(PCA9685_MODE1, sleep);
-  delay(5); // wait until cycle ends for sleep to be active
+  delay(5);  // wait until cycle ends for sleep to be active
 }
 
 /*!
@@ -86,7 +86,7 @@ void MotorDriver_PCA9685::sleep() {
  */
 void MotorDriver_PCA9685::wakeup() {
   uint8_t sleep = read8(PCA9685_MODE1);
-  uint8_t wakeup = sleep & ~MODE1_SLEEP; // set sleep bit low
+  uint8_t wakeup = sleep & ~MODE1_SLEEP;  // set sleep bit low
   write8(PCA9685_MODE1, wakeup);
 }
 
@@ -97,14 +97,14 @@ void MotorDriver_PCA9685::wakeup() {
  */
 void MotorDriver_PCA9685::setExtClk(uint8_t prescale) {
   uint8_t oldmode = read8(PCA9685_MODE1);
-  uint8_t newmode = (oldmode & ~MODE1_RESTART) | MODE1_SLEEP; // sleep
-  write8(PCA9685_MODE1, newmode); // go to sleep, turn off internal oscillator
+  uint8_t newmode = (oldmode & ~MODE1_RESTART) | MODE1_SLEEP;  // sleep
+  write8(PCA9685_MODE1, newmode);  // go to sleep, turn off internal oscillator
 
   // This sets both the SLEEP and EXTCLK bits of the MODE1 register to switch to
   // use the external clock.
   write8(PCA9685_MODE1, (newmode |= MODE1_EXTCLK));
 
-  write8(PCA9685_PRESCALE, prescale); // set the prescaler
+  write8(PCA9685_PRESCALE, prescale);  // set the prescaler
 
   delay(5);
   // clear the SLEEP bit to start
@@ -126,16 +126,12 @@ void MotorDriver_PCA9685::setPWMFreq(float freq) {
   Serial.println(freq);
 #endif
   // Range output modulation frequency is dependant on oscillator
-  if (freq < 1)
-    freq = 1;
-  if (freq > 3500)
-    freq = 3500; // Datasheet limit is 3052=50MHz/(4*4096)
+  if (freq < 1) freq = 1;
+  if (freq > 3500) freq = 3500;  // Datasheet limit is 3052=50MHz/(4*4096)
 
   float prescaleval = ((_oscillator_freq / (freq * 4096.0)) + 0.5) - 1;
-  if (prescaleval < PCA9685_PRESCALE_MIN)
-    prescaleval = PCA9685_PRESCALE_MIN;
-  if (prescaleval > PCA9685_PRESCALE_MAX)
-    prescaleval = PCA9685_PRESCALE_MAX;
+  if (prescaleval < PCA9685_PRESCALE_MIN) prescaleval = PCA9685_PRESCALE_MIN;
+  if (prescaleval > PCA9685_PRESCALE_MAX) prescaleval = PCA9685_PRESCALE_MAX;
   uint8_t prescale = (uint8_t)prescaleval;
 
 #ifdef ENABLE_DEBUG_OUTPUT
@@ -144,9 +140,9 @@ void MotorDriver_PCA9685::setPWMFreq(float freq) {
 #endif
 
   uint8_t oldmode = read8(PCA9685_MODE1);
-  uint8_t newmode = (oldmode & ~MODE1_RESTART) | MODE1_SLEEP; // sleep
-  write8(PCA9685_MODE1, newmode);                             // go to sleep
-  write8(PCA9685_PRESCALE, prescale); // set the prescaler
+  uint8_t newmode = (oldmode & ~MODE1_RESTART) | MODE1_SLEEP;  // sleep
+  write8(PCA9685_MODE1, newmode);                              // go to sleep
+  write8(PCA9685_PRESCALE, prescale);  // set the prescaler
   write8(PCA9685_MODE1, oldmode);
   delay(5);
   // This sets the MODE1 register to turn on auto increment.
@@ -268,7 +264,7 @@ void MotorDriver_PCA9685::setPin(uint8_t num, uint16_t val, bool invert) {
  *  @param  Microseconds The number of Microseconds to turn the PWM output ON
  */
 void MotorDriver_PCA9685::writeMicroseconds(uint8_t num,
-                                                uint16_t Microseconds) {
+                                            uint16_t Microseconds) {
 #ifdef ENABLE_DEBUG_OUTPUT
   Serial.print("Setting PWM Via Microseconds on output");
   Serial.print(num);
@@ -279,7 +275,7 @@ void MotorDriver_PCA9685::writeMicroseconds(uint8_t num,
 
   double pulse = Microseconds;
   double pulselength;
-  pulselength = 1000000; // 1,000,000 us per second
+  pulselength = 1000000;  // 1,000,000 us per second
 
   // Read prescale
   uint16_t prescale = readPrescale();
@@ -331,12 +327,14 @@ void MotorDriver_PCA9685::setOscillatorFrequency(uint32_t freq) {
 
 /*!
  *  @brief set motor direction,
- *  @param m1Dir: motor M1 direction, eg: 0 - M1 motor default direction ,1 - M1 motor reverse direction;
+ *  @param m1Dir: motor M1 direction, eg: 0 - M1 motor default direction ,1 - M1
+ * motor reverse direction;
  *  @param m2Dir: motor M2 direction;
  *  @param m3Dir: motor M3 direction;
  *  @param m4Dir: motor M4 direction;
  */
-void MotorDriver_PCA9685::setMotorDirReverse(bool m1Dir, bool m2Dir, bool m3Dir, bool m4Dir) {
+void MotorDriver_PCA9685::setMotorDirReverse(bool m1Dir, bool m2Dir, bool m3Dir,
+                                             bool m4Dir) {
   _MOTORM1REVERSE = m1Dir;
   _MOTORM2REVERSE = m2Dir;
   _MOTORM3REVERSE = m3Dir;
@@ -345,7 +343,8 @@ void MotorDriver_PCA9685::setMotorDirReverse(bool m1Dir, bool m2Dir, bool m3Dir,
 
 /*!
  *  @brief set ALL motor direction,
- *  @param MAllDir: motor all direction, eg: 0 - all motor default direction ,1 - all motor reverse direction;
+ *  @param MAllDir: motor all direction, eg: 0 - all motor default direction ,1
+ * - all motor reverse direction;
  */
 void MotorDriver_PCA9685::setMotorDirReverse(bool MAllDir) {
   _MOTORMALLREVERSE = MAllDir;
@@ -354,71 +353,66 @@ void MotorDriver_PCA9685::setMotorDirReverse(bool MAllDir) {
 /*!
  *  @brief Drive single motor ,
  *  @param motorNum: motor number, eg:1 - M1 motor ;
- *  @param speed: speed: motor speed, range -4096 ~ 4096; 
+ *  @param speed: speed: motor speed, range -4096 ~ 4096;
  */
 void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
-  // initPin();
-  if(motorNum == 1){
-    if( _MOTORM1REVERSE || _MOTORMALLREVERSE)
-      speed = 0 - speed;
+  if (motorNum == M1) {
+    if (_MOTORM1REVERSE || _MOTORMALLREVERSE) speed = 0 - speed;
     // MOTOR 1
-    if(speed > 0){
+    if (speed > 0) {
       setPin(_M1IN1, 0, 0);
       setPin(_M1IN2, 4096, 0);
       setPin(_M1PWM, speed, 0);
-    }else if(speed < 0){
+    } else if (speed < 0) {
       setPin(_M1IN1, 4096, 0);
       setPin(_M1IN2, 0, 0);
       setPin(_M1PWM, 0 - speed, 0);
-    }else{
+    } else {
       setPin(_M1IN1, 0, 0);
       setPin(_M1IN2, 0, 0);
     }
-  } else if (motorNum == 2) {
-    if( _MOTORM2REVERSE || _MOTORMALLREVERSE)
-      speed = 0 - speed;
+  } else if (motorNum == M2) {
+    if (_MOTORM2REVERSE || _MOTORMALLREVERSE) speed = 0 - speed;
     // MOTOR 2
-    if(speed > 0){
+    if (speed > 0) {
       setPin(_M2IN1, 0, 0);
       setPin(_M2IN2, 4096, 0);
       setPin(_M2PWM, speed, 0);
-    }else if(speed < 0){
+    } else if (speed < 0) {
       setPin(_M2IN1, 4096, 0);
       setPin(_M2IN2, 0, 0);
       setPin(_M2PWM, 0 - speed, 0);
-    }else{
+    } else {
       setPin(_M2IN1, 0, 0);
       setPin(_M2IN2, 0, 0);
     }
-  } else if (motorNum == 3) {
-    if( _MOTORM3REVERSE || _MOTORMALLREVERSE)
-      speed = 0 - speed;
+  } else if (motorNum == M3) {
+    if (_MOTORM3REVERSE || _MOTORMALLREVERSE) speed = 0 - speed;
     // MOTOR 3
-    if(speed > 0){
+    if (speed > 0) {
       setPin(_M3IN1, 0, 0);
       setPin(_M3IN2, 4096, 0);
       setPin(_M3PWM, speed, 0);
-    }else if(speed < 0){
+    } else if (speed < 0) {
       setPin(_M3IN1, 4096, 0);
       setPin(_M3IN2, 0, 0);
       setPin(_M3PWM, 0 - speed, 0);
-    }else{
+    } else {
       setPin(_M3IN1, 0, 0);
       setPin(_M3IN2, 0, 0);
     }
-  } else if (motorNum == 4) {
-    if( _MOTORM4REVERSE || _MOTORMALLREVERSE)
-      speed = 0 - speed;
+  } else if (motorNum == M4) {
+    if (_MOTORM4REVERSE || _MOTORMALLREVERSE) speed = 0 - speed;
     // MOTOR 4
-    if(speed > 0){
+    if (speed > 0) {
       setPin(_M4IN1, 0, 0);
       setPin(_M4IN2, 4096, 0);
       setPin(_M4PWM, speed, 0);
-    }else if(speed < 0){
+    } else if (speed < 0) {
       setPin(_M4IN1, 4096, 0);
       setPin(_M4IN2, 0, 0);
       setPin(_M4PWM, 0 - speed, 0);
-    }else{
+    } else {
       setPin(_M4IN1, 0, 0);
       setPin(_M4IN2, 0, 0);
     }
@@ -432,20 +426,58 @@ void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
 /*!
  *  @brief Drive motor ,
  *  @param speedM1: M1 motor speed, range -4096 ~ 4096;
- *  @param speedM2: M2 motor speed, range -4096 ~ 4096; 
- *  @param speedM3: M3 motor speed, range -4096 ~ 4096; 
- *  @param speedM4: M4 motor speed, range -4096 ~ 4096; 
+ *  @param speedM2: M2 motor speed, range -4096 ~ 4096;
+ *  @param speedM3: M3 motor speed, range -4096 ~ 4096;
+ *  @param speedM4: M4 motor speed, range -4096 ~ 4096;
  */
-void MotorDriver_PCA9685::setMotor(int16_t speedM1,int16_t speedM2,int16_t speedM3,int16_t speedM4) {
-  // initPin();
+void MotorDriver_PCA9685::setMotor(int16_t speedM1, int16_t speedM2,
+                                   int16_t speedM3, int16_t speedM4) {
   // MOTOR 1
-  setSingleMotor(1, speedM1);
+  setSingleMotor(M1, speedM1);
   // MOTOR 2
-  setSingleMotor(2, speedM2);
+  setSingleMotor(M2, speedM2);
   // MOTOR 3
-  setSingleMotor(3, speedM3);
+  setSingleMotor(M3, speedM3);
   // MOTOR 4
-  setSingleMotor(4, speedM4);
+  setSingleMotor(M4, speedM4);
+}
+
+/*!
+ *  @brief Drive ALL motor in the same speed.
+ *  @param speedall: M1 M2 M3 M4 motor speed, range -4096 ~ 4096;
+ */
+void MotorDriver_PCA9685::setMotor(int16_t speedall) {
+  // MOTOR 1
+  setSingleMotor(M1, speedall);
+  // MOTOR 2
+  setSingleMotor(M2, speedall);
+  // MOTOR 3
+  setSingleMotor(M3, speedall);
+  // MOTOR 4
+  setSingleMotor(M4, speedall);
+}
+
+/*!
+ *  @brief stop motor , Emergency stop / brake 紧急停止/刹车
+ *  @param motorNum: motor number, eg:1 - M1 motor ;
+ */
+void MotorDriver_PCA9685::stopMotor(int8_t motorNum) {
+  if (motorNum == M1) {  // MOTOR 1
+    setPin(_M1PWM, 0, 0);
+  } else if (motorNum == M2) {  // MOTOR 2
+    setPin(_M2PWM, 0, 0);
+  } else if (motorNum == M3) {  // MOTOR 3
+    setPin(_M3PWM, 0, 0);
+  } else if (motorNum == M4) {  // MOTOR 4
+    setPin(_M4PWM, 0, 0);
+  } else if (motorNum == MAll) {  // MOTOR 1 2 3 4
+    setPin(_M1PWM, 0, 0);
+    setPin(_M2PWM, 0, 0);
+    setPin(_M3PWM, 0, 0);
+    setPin(_M4PWM, 0, 0);
+  } else {
+    /* code */
+  }
 }
 
 /******************* Low level I2C interface */
@@ -465,8 +497,8 @@ void MotorDriver_PCA9685::write8(uint8_t addr, uint8_t d) {
   _i2c->endTransmission();
 }
 
-void MotorDriver_PCA9685::initPin(){
-  if(!_inited){
+void MotorDriver_PCA9685::initPin() {
+  if (!_inited) {
     _M1IN1 = 0;
     _M1IN2 = 1;
     _M1PWM = 2;
@@ -479,6 +511,6 @@ void MotorDriver_PCA9685::initPin(){
     _M4IN1 = 11;
     _M4IN2 = 12;
     _M4PWM = 13;
+    _inited = true;
   }
 }
-
