@@ -14,6 +14,7 @@
 
 
 #include "MotorDriver_PCA9685.h"
+#include <Wire.h>
 
 //#define ENABLE_DEBUG_OUTPUT
 
@@ -59,6 +60,7 @@ void MotorDriver_PCA9685::begin(uint8_t prescale) {
   }
   // set the default internal frequency
   setOscillatorFrequency(FREQUENCY_OSCILLATOR);
+  initPin();
 }
 
 /*!
@@ -355,7 +357,7 @@ void MotorDriver_PCA9685::setMotorDirReverse(bool MAllDir) {
  *  @param speed: speed: motor speed, range -4096 ~ 4096; 
  */
 void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
-  initPin();
+  // initPin();
   if(motorNum == 1){
     if( _MOTORM1REVERSE || _MOTORMALLREVERSE)
       speed = 0 - speed;
@@ -382,11 +384,11 @@ void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
       setPin(_M2PWM, speed, 0);
     }else if(speed < 0){
       setPin(_M2IN1, 4096, 0);
-      setPin(_M2IN1, 0, 0);
+      setPin(_M2IN2, 0, 0);
       setPin(_M2PWM, 0 - speed, 0);
     }else{
       setPin(_M2IN1, 0, 0);
-      setPin(_M2IN1, 0, 0);
+      setPin(_M2IN2, 0, 0);
     }
   } else if (motorNum == 3) {
     if( _MOTORM3REVERSE || _MOTORMALLREVERSE)
@@ -394,15 +396,15 @@ void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
     // MOTOR 3
     if(speed > 0){
       setPin(_M3IN1, 0, 0);
-      setPin(_M3IN1, 4096, 0);
+      setPin(_M3IN2, 4096, 0);
       setPin(_M3PWM, speed, 0);
     }else if(speed < 0){
       setPin(_M3IN1, 4096, 0);
-      setPin(_M3IN1, 0, 0);
+      setPin(_M3IN2, 0, 0);
       setPin(_M3PWM, 0 - speed, 0);
     }else{
       setPin(_M3IN1, 0, 0);
-      setPin(_M3IN1, 0, 0);
+      setPin(_M3IN2, 0, 0);
     }
   } else if (motorNum == 4) {
     if( _MOTORM4REVERSE || _MOTORMALLREVERSE)
@@ -410,15 +412,15 @@ void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
     // MOTOR 4
     if(speed > 0){
       setPin(_M4IN1, 0, 0);
-      setPin(_M4IN1, 4096, 0);
+      setPin(_M4IN2, 4096, 0);
       setPin(_M4PWM, speed, 0);
     }else if(speed < 0){
       setPin(_M4IN1, 4096, 0);
-      setPin(_M4IN1, 0, 0);
+      setPin(_M4IN2, 0, 0);
       setPin(_M4PWM, 0 - speed, 0);
     }else{
       setPin(_M4IN1, 0, 0);
-      setPin(_M4IN1, 0, 0);
+      setPin(_M4IN2, 0, 0);
     }
   } else {
 #ifdef ENABLE_DEBUG_OUTPUT
@@ -435,7 +437,7 @@ void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
  *  @param speedM4: M4 motor speed, range -4096 ~ 4096; 
  */
 void MotorDriver_PCA9685::setMotor(int16_t speedM1,int16_t speedM2,int16_t speedM3,int16_t speedM4) {
-  initPin();
+  // initPin();
   // MOTOR 1
   setSingleMotor(1, speedM1);
   // MOTOR 2
