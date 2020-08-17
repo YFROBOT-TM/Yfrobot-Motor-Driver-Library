@@ -4,7 +4,7 @@
  *  This is a library for Motor driver.
  *
  *  Designed specifically to work with the Yfrobot Motor driver.
- *   L298P MD01 MD02 MD03 MD04 PM-R3 DRV8833 TB6612
+ *   IIC_TB6612
  *
  *  These driver use I2C to communicate, 2 pins are required to interface.
  *  For Arduino UNOs, thats SCL -> Analog 5, SDA -> Analog 4.
@@ -360,12 +360,12 @@ void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
     if (_MOTORM1REVERSE || _MOTORMALLREVERSE) speed = 0 - speed;
     // MOTOR 1
     if (speed > 0) {
-      setPin(_M1IN1, 0, 0);
-      setPin(_M1IN2, 4096, 0);
-      setPin(_M1PWM, speed, 0);
-    } else if (speed < 0) {
       setPin(_M1IN1, 4096, 0);
       setPin(_M1IN2, 0, 0);
+      setPin(_M1PWM, speed, 0);
+    } else if (speed < 0) {
+      setPin(_M1IN1, 0, 0);
+      setPin(_M1IN2, 4096, 0);
       setPin(_M1PWM, 0 - speed, 0);
     } else {
       setPin(_M1IN1, 0, 0);
@@ -375,12 +375,12 @@ void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
     if (_MOTORM2REVERSE || _MOTORMALLREVERSE) speed = 0 - speed;
     // MOTOR 2
     if (speed > 0) {
-      setPin(_M2IN1, 0, 0);
-      setPin(_M2IN2, 4096, 0);
-      setPin(_M2PWM, speed, 0);
-    } else if (speed < 0) {
       setPin(_M2IN1, 4096, 0);
       setPin(_M2IN2, 0, 0);
+      setPin(_M2PWM, speed, 0);
+    } else if (speed < 0) {
+      setPin(_M2IN1, 0, 0);
+      setPin(_M2IN2, 4096, 0);
       setPin(_M2PWM, 0 - speed, 0);
     } else {
       setPin(_M2IN1, 0, 0);
@@ -390,12 +390,12 @@ void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
     if (_MOTORM3REVERSE || _MOTORMALLREVERSE) speed = 0 - speed;
     // MOTOR 3
     if (speed > 0) {
-      setPin(_M3IN1, 0, 0);
-      setPin(_M3IN2, 4096, 0);
-      setPin(_M3PWM, speed, 0);
-    } else if (speed < 0) {
       setPin(_M3IN1, 4096, 0);
       setPin(_M3IN2, 0, 0);
+      setPin(_M3PWM, speed, 0);
+    } else if (speed < 0) {
+      setPin(_M3IN1, 0, 0);
+      setPin(_M3IN2, 4096, 0);
       setPin(_M3PWM, 0 - speed, 0);
     } else {
       setPin(_M3IN1, 0, 0);
@@ -405,12 +405,12 @@ void MotorDriver_PCA9685::setSingleMotor(int8_t motorNum, int16_t speed) {
     if (_MOTORM4REVERSE || _MOTORMALLREVERSE) speed = 0 - speed;
     // MOTOR 4
     if (speed > 0) {
-      setPin(_M4IN1, 0, 0);
-      setPin(_M4IN2, 4096, 0);
-      setPin(_M4PWM, speed, 0);
-    } else if (speed < 0) {
       setPin(_M4IN1, 4096, 0);
       setPin(_M4IN2, 0, 0);
+      setPin(_M4PWM, speed, 0);
+    } else if (speed < 0) {
+      setPin(_M4IN1, 0, 0);
+      setPin(_M4IN2, 4096, 0);
       setPin(_M4PWM, 0 - speed, 0);
     } else {
       setPin(_M4IN1, 0, 0);
