@@ -1,10 +1,10 @@
 /*
- *  @file MotorDriver_PMR3.h
+ *  @file MotorDriver_L298P.h
  *
  *  This is a library for Motor driver.
  *
  *  Designed specifically to work with the Yfrobot Motor driver.
- *    PM-R3_TB6612
+ *    L298P
  *
  *  BSD license, all text above must be included in any redistribution
  */
@@ -18,10 +18,10 @@
  *  @brief  Class that stores state and functions for interacting with TB6612
  * PWM chip
  */
-class MotorDriver_PMR3 {
+class MotorDriver_L298P {
  public:
-  MotorDriver_PMR3();
-  MotorDriver_PMR3(int8_t offsetA, int8_t offsetB);
+  MotorDriver_L298P();
+  MotorDriver_L298P(int8_t offsetA, int8_t offsetB);
   void setMotor(int16_t speedA, int16_t speedB);   // 驱动电机
 
  private:
