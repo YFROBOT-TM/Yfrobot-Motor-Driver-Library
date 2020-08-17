@@ -13,7 +13,7 @@
 #define M1PWM 5
 #define M2DIR 7
 #define M2PWM 6
-#define MSLP 8
+#define MSLP 8  // or #define MSLP -1 slp connect to the high
 #define M1CS A0
 #define M2CS A1
 
