@@ -21,15 +21,17 @@
  *  @param _dir: dir pin;
  *  @param _pwm: pwm pin;
  */
-MotorDriver_MD::MotorDriver_MD(uint8_t _dir, uint8_t _pwm, int8_t _offset, uint8_t _slp) {
+MotorDriver_MD::MotorDriver_MD(uint8_t _dir, uint8_t _pwm, int8_t _offset, int8_t _slp) {
   _MSLP = _slp;
   _MDIR = _dir;
   _MPWM = _pwm;
   _OFFSET = _offset;
-  pinMode(_MSLP, OUTPUT);
   pinMode(_MDIR, OUTPUT);
   pinMode(_MPWM, OUTPUT);
-  digitalWrite(_MSLP, HIGH);
+  if(_slp >= 0) {
+    pinMode(_MSLP, OUTPUT);
+    digitalWrite(_MSLP, HIGH);
+  }
 }
 
 /*!
@@ -39,8 +41,8 @@ MotorDriver_MD::MotorDriver_MD(uint8_t _dir, uint8_t _pwm, int8_t _offset, uint8
  *  @param _pwm: pwm pin;
  *  @param _cs: cs pin; 电流检测引脚
  */
-MotorDriver_MD::MotorDriver_MD(uint8_t _dir, uint8_t _pwm, int8_t _offset, uint8_t _cs, uint8_t _slp) {
-  MotorDriver_MD(_slp, _dir, _pwm, _offset);
+MotorDriver_MD::MotorDriver_MD(uint8_t _dir, uint8_t _pwm, int8_t _offset, uint8_t _cs, int8_t _slp) {
+  MotorDriver_MD( _dir, _pwm, _offset, _slp);
   _MCS = _cs;
   pinMode(_MCS,INPUT);
 }
@@ -89,14 +91,22 @@ MotorDriver_MD::MotorDriver_MD(uint8_t _dir, uint8_t _pwm, int8_t _offset, uint8
  *  @brief  Puts board into sleep mode
  */
 void MotorDriver_MD::sleep() {
-  digitalWrite(_MSLP, LOW);
+  if(_slp >= 0) {
+    digitalWrite(_MSLP, LOW);
+  }else{
+    /* slp 引脚连接至高电平，没有睡眠模式 */
+  }
 }
 
 /*!
  *  @brief  Wakes board from sleep
  */
 void MotorDriver_MD::wakeup() {
-  digitalWrite(_MSLP, HIGH);
+  if(_slp >= 0) {
+    digitalWrite(_MSLP, HIGH);
+  }else{
+    /* slp 引脚连接至高电平，没有睡眠模式 */
+  }
 }
 
 /*!

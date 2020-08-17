@@ -11,11 +11,11 @@
 
 #define M1DIR 4
 #define M1PWM 5
-#define M1CS A0
 #define M2DIR 7
 #define M2PWM 6
-#define M2CS A1
 #define MSLP 8
+#define M1CS A0
+#define M2CS A1
 
 // these constants are used to allow you to make your motor configuration 
 // line up with function names like forward.  Value can be 1 or -1

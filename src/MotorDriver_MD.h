@@ -19,8 +19,8 @@
  */
 class MotorDriver_MD {
  public:
-  MotorDriver_MD(uint8_t _dir, uint8_t _pwm, int8_t _offset, uint8_t _slp);
-  MotorDriver_MD(uint8_t _dir, uint8_t _pwm, int8_t _offset, uint8_t _cs, uint8_t _slp);
+  MotorDriver_MD(uint8_t _dir, uint8_t _pwm, int8_t _offset, int8_t _slp);
+  MotorDriver_MD(uint8_t _dir, uint8_t _pwm, int8_t _offset, uint8_t _cs, int8_t _slp);
   // MotorDriver_MD(uint8_t _slp, uint8_t _dir1, uint8_t _pwm1, uint8_t _dir2, uint8_t _pwm2);
   // MotorDriver_MD(uint8_t _slp, uint8_t _dir1, uint8_t _pwm1, uint8_t _cs1, uint8_t _dir2, uint8_t _pwm2, uint8_t _cs2);
 
