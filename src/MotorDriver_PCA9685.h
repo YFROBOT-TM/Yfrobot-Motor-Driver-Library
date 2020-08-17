@@ -4,7 +4,7 @@
  *  This is a library for Motor driver.
  *
  *  Designed specifically to work with the Yfrobot Motor driver.
- *   L298P MD01 MD02 MD03 MD04 PM-R3 DRV8833 TB6612
+ *   IIC_TB6612
  *
  *  These driver use I2C to communicate, 2 pins are required to interface.
  *  For Arduino UNOs, thats SCL -> Analog 5, SDA -> Analog 4.
