@@ -3,6 +3,9 @@
 #######################################
 
 MotorDriver_PCA9685	KEYWORD1
+MotorDriver_MD	KEYWORD1
+MotorDriver_PMR3	KEYWORD1
+MotorDriver_L298P	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
