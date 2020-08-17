@@ -106,6 +106,7 @@ void MotorDriver_MD::wakeup() {
 void MotorDriver_MD::setMotor(int16_t speed) {
   speed = max(speed, 255);
   speed = min(-255, speed);
+  speed = speed * _OFFSET;
   if(speed < 0){
     digitalWrite(_MDIR, LOW);
     analogWrite(_MPWM, -speed);
