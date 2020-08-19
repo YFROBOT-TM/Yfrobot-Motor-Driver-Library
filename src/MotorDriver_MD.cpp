@@ -28,7 +28,7 @@ MotorDriver_MD::MotorDriver_MD(uint8_t _dir, uint8_t _pwm, int8_t _offset, int8_
   _OFFSET = _offset;
   pinMode(_MDIR, OUTPUT);
   pinMode(_MPWM, OUTPUT);
-  if(_slp >= 0) {
+  if(_MSLP >= 0) {
     pinMode(_MSLP, OUTPUT);
     digitalWrite(_MSLP, HIGH);
   }
@@ -91,7 +91,7 @@ MotorDriver_MD::MotorDriver_MD(uint8_t _dir, uint8_t _pwm, int8_t _offset, uint8
  *  @brief  Puts board into sleep mode
  */
 void MotorDriver_MD::sleep() {
-  if(_slp >= 0) {
+  if(_MSLP >= 0) {
     digitalWrite(_MSLP, LOW);
   }else{
     /* slp 引脚连接至高电平，没有睡眠模式 */
@@ -102,7 +102,7 @@ void MotorDriver_MD::sleep() {
  *  @brief  Wakes board from sleep
  */
 void MotorDriver_MD::wakeup() {
-  if(_slp >= 0) {
+  if(_MSLP >= 0) {
     digitalWrite(_MSLP, HIGH);
   }else{
     /* slp 引脚连接至高电平，没有睡眠模式 */
