@@ -3,7 +3,7 @@ YFROBOT Motor Driver Library for Arduino
 
 #### MotorDriver_IIC 使用说明：
 
-
+[Motor Driver iic](http://www.yfrobot.com/wiki/index.php?title=MotorDriver_IIC)
 
 调用库：
 
