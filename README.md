@@ -13,7 +13,7 @@ MotorDriver_IIC 使用说明：
 
 Methods：
 
-初始化：
+初始化
 
 `motorDirver.begin();`
 
