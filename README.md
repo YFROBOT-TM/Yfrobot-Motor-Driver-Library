@@ -1,7 +1,9 @@
 # Yfrobot-Motor-Driver-Library
 YFROBOT Motor Driver Library for Arduino
 
-MotorDriver_IIC 使用说明：
+#### MotorDriver_IIC 使用说明：
+
+
 
 调用库：
 
@@ -43,3 +45,14 @@ Methods：
 
 `motorDirver.stopMotor(MAll);  // 电机M1/M2/M3/M4 刹车`
 
+#### MotorDriver_MD 使用说明：
+
+待添加......
+
+#### MotorDriver_L298P 使用说明：
+
+待添加......
+
+#### MotorDriver_PMR3 使用说明：
+
+待添加......
