@@ -1,0 +1,6 @@
+{
+    "board": "arduino:avr:uno",
+    "programmer": "AVR ISP",
+    "port": "COM8",
+    "sketch": "examples\\motorTest_L298P\\motorTest_L298P.ino"
+}
