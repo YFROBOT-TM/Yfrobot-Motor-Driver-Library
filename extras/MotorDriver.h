@@ -1,5 +1,5 @@
 /*
- *  @file MotorDriver_L298P.h
+ *  @file MotorDriver.h
  *
  *  This is a library for Motor driver.
  *
@@ -9,20 +9,21 @@
  *  BSD license, all text above must be included in any redistribution
  */
 
-#ifndef _MotorDriver_TB6612_H
-#define _MotorDriver_TB6612_H
+#ifndef _MotorDriver_H
+#define _MotorDriver_H
 
 #include <Arduino.h>
 
 /*!
- *  @brief  Class that stores state and functions for interacting with TB6612
- * PWM chip
+ *  @brief  Class that stores state and functions for interacting with motor chip
  */
-class MotorDriver_L298P {
+class MotorDriver {
  public:
-  MotorDriver_L298P();
-  MotorDriver_L298P(int8_t offsetA, int8_t offsetB);
+ #ifdef YF_ARDUINO_SHIELD_L298P || YF_ARDUINO_SHIELD_PMR3
+  MotorDriver();
+  MotorDriver(int8_t offsetA, int8_t offsetB);
   void setMotor(int16_t speedA, int16_t speedB);   // 驱动电机
+#endif
 
  private:
   uint8_t _MADIR;        // 电机MA 方向

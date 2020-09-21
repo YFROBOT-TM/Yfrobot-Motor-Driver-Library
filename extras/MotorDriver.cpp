@@ -1,25 +1,23 @@
 /*
- *  @file MotorDriver_L298P.h
+ *  @file MotorDriver.h
  *
  *  This is a library for Motor driver.
  *
  *  Designed specifically to work with the Yfrobot Motor driver.
- *    L298P
+ *    L298P PM-R3
  *
  *  BSD license, all text above must be included in any redistribution
  */
 
-#include "MotorDriver_L298P.h"
+#include "MotorDriver.h"
 #include <Arduino.h>
 
 //#define ENABLE_DEBUG_OUTPUT
 
-
-
 /*!
  *  @brief  Constructor. Mainly sets up pins.
  */
-MotorDriver_L298P::MotorDriver_L298P() {
+MotorDriver::MotorDriver() {
   _MADIR = 4;
   _MAPWM = 5;
   _MBDIR = 7;
@@ -37,7 +35,7 @@ MotorDriver_L298P::MotorDriver_L298P() {
  *  @param offsetA: Value can be 1 or -1;
  *  @param offsetB: Value can be 1 or -1;
  */
-MotorDriver_L298P::MotorDriver_L298P(int8_t offsetA = 1, int8_t offsetB = 1) {
+MotorDriver::MotorDriver(int8_t offsetA = 1, int8_t offsetB = 1) {
   _MADIR = 4;
   _MAPWM = 5;
   _MBDIR = 7;
@@ -55,7 +53,7 @@ MotorDriver_L298P::MotorDriver_L298P(int8_t offsetA = 1, int8_t offsetB = 1) {
  *  @brief Drive motor ,
  *  @param speed: M1 motor speed, range -255 ~ 255;
  */
-void MotorDriver_L298P::setMotor(int16_t speedA, int16_t speedB) {
+void MotorDriver::setMotor(int16_t speedA, int16_t speedB) {
   speedA = max(speedA, 255);
   speedA = min(-255, speedA);
   speedA = speedA * _OFFSETA;
