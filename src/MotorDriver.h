@@ -19,11 +19,11 @@
  */
 class MotorDriver {
  public:
- #ifdef YF_ARDUINO_SHIELD_L298P || YF_ARDUINO_SHIELD_PMR3
+//  #ifdef YF_ARDUINO_SHIELD_L298P || YF_ARDUINO_SHIELD_PMR3
   MotorDriver();
   MotorDriver(int8_t offsetA, int8_t offsetB);
   void setMotor(int16_t speedA, int16_t speedB);   // 驱动电机
-#endif
+// #endif
 
  private:
   uint8_t _MADIR;        // 电机MA 方向
