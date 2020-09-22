@@ -57,7 +57,8 @@ MotorDriver::MotorDriver(int8_t offsetA = 1, int8_t offsetB = 1) {
  *  @param speed: M1 motor speed, range -255 ~ 255;
  */
 void MotorDriver::setMotor(int16_t speedA, int16_t speedB) {
-#ifdef YF_ARDUINO_SHIELD_L298P
+  Serial.println("test_2");
+#ifdef __YF_ARDUINO_SHIELD_L298P__
 Serial.println("test");
   speedA = max(speedA, 255);
   speedA = min(-255, speedA);

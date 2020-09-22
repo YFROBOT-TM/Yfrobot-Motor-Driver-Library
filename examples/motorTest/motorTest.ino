@@ -7,16 +7,18 @@
   YFROBOT ZL
   08/13/2020
  ****************************************************/
+#define __YF_ARDUINO_SHIELD_L298P__
 
-#include <MotorDriver_L298P.h>
+#include <MotorDriver.h>
 
 // these constants are used to allow you to make your motor configuration 
 // line up with function names like forward.  Value can be 1 or -1
 const int offseta = 1;
 const int offsetb = 1;
 
+
 // Initializing motors. 
-MotorDriver_L298P motorDirver = MotorDriver_L298P();
+MotorDriver motorDirver = MotorDriver();
 // MotorDriver_L298P motorDirver = MotorDriver_L298P(offseta, offsetb);
 
 

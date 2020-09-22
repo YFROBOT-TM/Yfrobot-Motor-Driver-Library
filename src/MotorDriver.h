@@ -9,8 +9,8 @@
  *  BSD license, all text above must be included in any redistribution
  */
 
-#ifndef _MotorDriver_H
-#define _MotorDriver_H
+// #ifndef _MotorDriver_H
+// #define _MotorDriver_H
 
 #include <Arduino.h>
 
@@ -35,4 +35,4 @@ class MotorDriver {
   int8_t _OFFSETB;
 };
 
-#endif
+// #endif
