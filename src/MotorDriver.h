@@ -4,26 +4,28 @@
  *  This is a library for Motor driver.
  *
  *  Designed specifically to work with the Yfrobot Motor driver.
- *    L298P
+ *    L298P PM-R3(tb6612) 
  *
  *  BSD license, all text above must be included in any redistribution
  */
 
-// #ifndef _MotorDriver_H
-// #define _MotorDriver_H
+#ifndef _MotorDriver_H
+#define _MotorDriver_H
 
 #include <Arduino.h>
+
+/* Define types of motor driver module. */
+#define YF_L298P  1   // yfrobot L298P module
+#define YF_PMR3   2   // yfrobot PM-R3 module
 
 /*!
  *  @brief  Class that stores state and functions for interacting with motor chip
  */
 class MotorDriver {
  public:
-//  #ifdef YF_ARDUINO_SHIELD_L298P || YF_ARDUINO_SHIELD_PMR3
-  MotorDriver();
-  MotorDriver(int8_t offsetA, int8_t offsetB);
-  void setMotor(int16_t speedA, int16_t speedB);   // 驱动电机
-// #endif
+  MotorDriver(uint8_t type);
+  void motorConfig(int8_t offsetA, int8_t offsetB); // Motor direction configuration - 电机方向配置
+  void setMotor(int16_t speedA, int16_t speedB);    // Motor drive - 驱动电机
 
  private:
   uint8_t _MADIR;        // 电机MA 方向
@@ -33,6 +35,8 @@ class MotorDriver {
 
   int8_t _OFFSETA;
   int8_t _OFFSETB;
+  
+  uint8_t _TYPE_MODULE;  // 模块类型
 };
 
-// #endif
+#endif

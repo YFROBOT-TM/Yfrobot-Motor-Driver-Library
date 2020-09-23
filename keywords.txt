@@ -7,6 +7,7 @@ MotorDriver_PCA9685_8838	KEYWORD1
 MotorDriver_MD	KEYWORD1
 MotorDriver_PMR3	KEYWORD1
 MotorDriver_L298P	KEYWORD1
+MotorDriver KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -29,6 +30,7 @@ getOscillatorFrequency	KEYWORD2
 setSingleMotor	KEYWORD2
 setMotor	KEYWORD2
 setMotorDirReverse	KEYWORD2
+motorConfig KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
