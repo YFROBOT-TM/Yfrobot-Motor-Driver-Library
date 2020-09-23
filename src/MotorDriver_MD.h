@@ -21,13 +21,10 @@ class MotorDriver_MD {
  public:
   MotorDriver_MD(uint8_t _dir, uint8_t _pwm, int8_t _offset, int8_t _slp);
   MotorDriver_MD(uint8_t _dir, uint8_t _pwm, int8_t _offset, uint8_t _cs, int8_t _slp);
-  // MotorDriver_MD(uint8_t _slp, uint8_t _dir1, uint8_t _pwm1, uint8_t _dir2, uint8_t _pwm2);
-  // MotorDriver_MD(uint8_t _slp, uint8_t _dir1, uint8_t _pwm1, uint8_t _cs1, uint8_t _dir2, uint8_t _pwm2, uint8_t _cs2);
 
   void sleep();
   void wakeup();
 
-  // void setSingleMotor(int16_t speed);  // 驱动单个电机
   void setMotor(int16_t speed);   // 驱动电机
   // void stopMotor(int8_t motorNum);  // 刹车
   unsigned int getMotorCurrent();
@@ -37,6 +34,7 @@ class MotorDriver_MD {
   uint8_t _MPWM;        // 电机M1 PWM
   uint8_t _MCS;         // 电机M1 电流检测引脚 CS
   uint8_t _MSLP;        // 电机 睡眠引脚
+
   int8_t _OFFSET;       // 电机方向设置
 
 };

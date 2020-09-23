@@ -17,6 +17,10 @@
 /* Define types of motor driver module. */
 #define YF_L298P  1   // yfrobot L298P module
 #define YF_PMR3   2   // yfrobot PM-R3 module
+#define YF_MD01   3   // yfrobot MD01 module
+#define YF_MD02   4   // yfrobot MD02 module
+#define YF_MD03   5   // yfrobot MD03 module
+#define YF_MD04   6   // yfrobot MD04 module
 
 /*!
  *  @brief  Class that stores state and functions for interacting with motor chip
@@ -28,10 +32,10 @@ class MotorDriver {
   void setMotor(int16_t speedA, int16_t speedB);    // Motor drive - 驱动电机
 
  private:
-  uint8_t _MADIR;        // 电机MA 方向
-  uint8_t _MAPWM;        // 电机MA PWM
-  uint8_t _MBDIR;        // 电机MB 方向
-  uint8_t _MBPWM;        // 电机MB PWM
+  uint8_t _MADIRPIN;        // 电机MA 方向
+  uint8_t _MAPWMPIN;        // 电机MA PWM
+  uint8_t _MBDIRPIN;        // 电机MB 方向
+  uint8_t _MBPWMPIN;        // 电机MB PWM
 
   int8_t _OFFSETA;
   int8_t _OFFSETB;

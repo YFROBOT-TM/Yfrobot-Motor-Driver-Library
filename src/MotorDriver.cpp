@@ -4,29 +4,34 @@
  *  This is a library for Motor driver.
  *
  *  Designed specifically to work with the Yfrobot Motor driver.
- *    L298P PM-R3(tb6612) 
+ *    L298P PM-R3(tb6612)
  *
  *  BSD license, all text above must be included in any redistribution
  */
 
 #include "MotorDriver.h"
+
 #include <Arduino.h>
+
+#include "MotorDriverPin.h"
 
 /*!
  *  @brief  Constructor. Mainly sets up pins.
  */
 MotorDriver::MotorDriver(uint8_t type) {
-  _MADIR = 4;
-  _MAPWM = 5;
-  _MBDIR = 7;
-  _MBPWM = 6;
+  _TYPE_MODULE = type;
   _OFFSETA = 1;
   _OFFSETB = 1;
-  _TYPE_MODULE = type;
-  pinMode(_MADIR, OUTPUT);
-  pinMode(_MAPWM, OUTPUT);
-  pinMode(_MBDIR, OUTPUT);
-  pinMode(_MBPWM, OUTPUT);
+  if (_TYPE_MODULE == YF_L298P || _TYPE_MODULE == YF_PMR3) {
+    _MADIRPIN = YF_LP_ADIR_PIN;
+    _MAPWMPIN = YF_LP_APWM_PIN;
+    _MBDIRPIN = YF_LP_BDIR_PIN;
+    _MBPWMPIN = YF_LP_BPWM_PIN;
+    pinMode(_MADIRPIN, OUTPUT);
+    pinMode(_MAPWMPIN, OUTPUT);
+    pinMode(_MBDIRPIN, OUTPUT);
+    pinMode(_MBPWMPIN, OUTPUT);
+  }
 }
 
 /*!
@@ -55,19 +60,19 @@ void MotorDriver::setMotor(int16_t speedA, int16_t speedB) {
     speedB = speedB * _OFFSETB;
 
     if (speedA > 0) {
-      digitalWrite(_MADIR, HIGH);
-      analogWrite(_MAPWM, speedA);
+      digitalWrite(_MADIRPIN, HIGH);
+      analogWrite(_MAPWMPIN, speedA);
     } else {
-      digitalWrite(_MADIR, LOW);
-      analogWrite(_MAPWM, -speedA);
+      digitalWrite(_MADIRPIN, LOW);
+      analogWrite(_MAPWMPIN, -speedA);
     }
 
     if (speedB > 0) {
-      digitalWrite(_MBDIR, HIGH);
-      analogWrite(_MBPWM, speedB);
+      digitalWrite(_MBDIRPIN, HIGH);
+      analogWrite(_MBPWMPIN, speedB);
     } else {
-      digitalWrite(_MBDIR, LOW);
-      analogWrite(_MBPWM, -speedB);
+      digitalWrite(_MBDIRPIN, LOW);
+      analogWrite(_MBPWMPIN, -speedB);
     }
   }
 }
