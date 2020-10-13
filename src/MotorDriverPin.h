@@ -24,11 +24,21 @@
 #define YF_PCA9685_CH12  12   // Channel 12
 #define YF_PCA9685_CH13  13   // Channel 13
 
-// valon 
-
+// valon DRV8838
+#define YF_VALON_LDIR_PIN  4   // motor left dir pin
+#define YF_VALON_LPWM_PIN  5   // motor left pwm pin
+#define YF_VALON_RDIR_PIN  9   // motor right dir pin
+#define YF_VALON_RPWM_PIN  6   // motor right pwm pin
 
 // 4wd mecanum wheel
-
+#define YF_4WDMW_M1DIR_PIN 4
+#define YF_4WDMW_M1PWM_PIN 3
+#define YF_4WDMW_M2DIR_PIN 7
+#define YF_4WDMW_M2PWM_PIN 5
+#define YF_4WDMW_M3DIR_PIN 8
+#define YF_4WDMW_M3PWM_PIN 6
+#define YF_4WDMW_M4DIR_PIN 12
+#define YF_4WDMW_M4PWM_PIN 11
 
 
 

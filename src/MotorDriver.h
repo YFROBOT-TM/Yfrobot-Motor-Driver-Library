@@ -23,6 +23,8 @@
 #define YF_MD03 5    // yfrobot MD03 module
 #define YF_MD04 6    // yfrobot MD04 module
 #define YF_IIC_TB 7  // yfrobot PCA9685 IIC 4路电机驱动模块
+#define YF_VALON 8   // yfrobot valon 小车 drv8838x2
+#define YF_4WDMW 9   // yfrobot 4wd 麦轮小车 drv8838x4
 
 extern uint8_t SerialDebug;  // 外部访问 串口使能变量
 
@@ -113,6 +115,8 @@ class MotorDriver {
   void motorConfig(int8_t offsetA, int8_t offsetB); // L298P PMR3 
   void motorConfig(bool m1Dir, bool m2Dir, bool m3Dir, bool m4Dir); // IIC_TB
   void setMotor(int16_t speedA, int16_t speedB);  // Motor drive - L298P PMR3 
+
+  void driverOneMotor(int8_t pin_d, int8_t pin_p, int16_t m_speed, int8_t m_offset = 1);
   
   // PCA9685 IIC
   void setAddress(const uint8_t addr);
