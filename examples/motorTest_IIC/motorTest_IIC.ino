@@ -4,20 +4,27 @@
   YFROBOT ZL
   08/13/2020
  ****************************************************/
+#include <MotorDriver.h>
 
-#include <MotorDriver_PCA9685.h>
+#define MOTORTYPE YF_IIC_TB   //
+uint8_t SerialDebug = 1; // 串口打印调试 0-否 1-是
 
-// called this way, it uses the default address 0x40
-MotorDriver_PCA9685 motorDriver = MotorDriver_PCA9685();
+// these constants are used to allow you to make your motor configuration
+// line up with function names like forward.  Value can be 1 or -1
+const int offsetm1 = 1;
+const int offsetm2 = 1;
+const int offsetm3 = 1;
+const int offsetm4 = 1;
+
+// Initializing motors.
+MotorDriver motorDriver = MotorDriver(MOTORTYPE);
 
 void setup() {
   Serial.begin(9600);
   Serial.println("Motor Drive test!");
   motorDriver.begin();
-  // motorDriver.setPWMFreq(1600);       // This is the maximum PWM frequency
-  // motorDriver.setMotorDirReverse(0);  // 设置电机反向, 0-默认,1-反向.
-  Wire.begin();  // join the TWI as the master
-  delay(2000);   // wait 2s
+  motorDriver.motorConfig(offsetm1, offsetm2, offsetm3, offsetm4);
+  delay(1000);   // wait 2s
   Serial.println("Start...");
 }
 
@@ -39,7 +46,7 @@ void loop() {
   motorDriver.setSingleMotor(M4, 0);  // 电机M4停止
   delay(1000);
 
-  motorDriver.setMotor(0, 4096, 2048,1024);  // 电机M1停止,电机M2 全速正转,电机M3 50%正转,电机M4 25%正转
+  motorDriver.setMotor(0, 4096, 2048, 1024); // 电机M1停止,电机M2 全速正转,电机M3 50%正转,电机M4 25%正转
   delay(500);
   motorDriver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4停止
   delay(500);
@@ -48,11 +55,20 @@ void loop() {
   motorDriver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4停止
   delay(1000);
 
-  motorDriver.setMotor(4096, 4096, 4096, 4096);  // 电机M1/M2/M3/M4 全速正转
+  motorDriver.setMotor(4096);   // 电机M1/M2/M3/M4 全速正转
   delay(500);
-  motorDriver.stopMotor(M1);  // 电机M1 刹车
+  motorDriver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4 停止
   delay(500);
-  motorDriver.setMotor(-4096, -4096, -4096, -4096);  // 电机M1/M2/M3/M4 全速反转
+  motorDriver.setMotor(-4096);  // 电机M1/M2/M3/M4 全速反转
+  delay(500);
+  motorDriver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4 停止
+  delay(1000);
+
+  motorDriver.setMotor(4096, 4096, 4096, 4096);       // 电机M1/M2/M3/M4 全速正转
+  delay(500);
+  motorDriver.stopMotor(M1);    // 电机M1 刹车
+  delay(500);
+  motorDriver.setMotor(-4096, -4096, -4096, -4096);   // 电机M1/M2/M3/M4 全速反转
   delay(500);
   motorDriver.stopMotor(MAll);  // 电机M1/M2/M3/M4 刹车
   delay(1500);
