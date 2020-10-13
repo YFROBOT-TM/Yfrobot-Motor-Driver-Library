@@ -22,6 +22,8 @@
 #define YF_MD03   5   // yfrobot MD03 module
 #define YF_MD04   6   // yfrobot MD04 module
 
+extern uint8_t SerialDebug; // 外部访问 串口使能变量
+
 /*!
  *  @brief  Class that stores state and functions for interacting with motor chip
  */
@@ -32,6 +34,7 @@ class MotorDriver {
   void setMotor(int16_t speedA, int16_t speedB);    // Motor drive - 驱动电机
 
  private:
+  // 双电机引脚
   uint8_t _MADIRPIN;        // 电机MA 方向
   uint8_t _MAPWMPIN;        // 电机MA PWM
   uint8_t _MBDIRPIN;        // 电机MB 方向
