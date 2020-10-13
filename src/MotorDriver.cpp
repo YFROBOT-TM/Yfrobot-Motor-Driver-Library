@@ -10,9 +10,7 @@
  */
 
 #include "MotorDriver.h"
-
 #include <Arduino.h>
-
 #include "MotorDriverPin.h"
 
 /*!
@@ -45,12 +43,15 @@ void MotorDriver::motorConfig(int8_t offsetA = 1, int8_t offsetB = 1) {
 }
 
 /*!
- *  @brief Drive motor ,
+ *  @brief Drive motor , 2 Motor
  *  @param speedA: M1 motor speed, range -255 ~ 255;
  *  @param speedB: M2 motor speed, range -255 ~ 255;
  */
 void MotorDriver::setMotor(int16_t speedA, int16_t speedB) {
   if (_TYPE_MODULE == YF_L298P || _TYPE_MODULE == YF_PMR3) {
+    if(SerialDebug == 1){
+      Serial.println("Driver Motor - L298P/PMR3");
+    }
     speedA = max(speedA, 255);
     speedA = min(-255, speedA);
     speedA = speedA * _OFFSETA;
