@@ -40,7 +40,16 @@
 #define YF_4WDMW_M4DIR_PIN 12
 #define YF_4WDMW_M4PWM_PIN 11
 
+// MD 01 02 03
 
-
+// MD04
+#define YF_MD04_ADIR_PIN  4   // motor a dir pin
+#define YF_MD04_APWM_PIN  5   // motor a pwm pin
+#define YF_MD04_ASLP_PIN  2   // motor a slp pin
+#define YF_MD04_BDIR_PIN  7   // motor b dir pin
+#define YF_MD04_BPWM_PIN  6   // motor b pwm pin
+#define YF_MD04_BSLP_PIN  8   // motor b slp pin
+#define YF_MD04_ACS_PIN A0
+#define YF_MD04_BCS_PIN A1
 
 #endif

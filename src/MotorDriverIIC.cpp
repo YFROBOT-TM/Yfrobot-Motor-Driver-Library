@@ -1,37 +1,25 @@
-/*
- *  @file MotorDriver_PCA9685_8838.h
- *
- *  This is a library for Motor driver.
- *
- *  Designed specifically to work with the Yfrobot Motor driver.
- *   IIC_TB6612
- *
- *  These driver use I2C to communicate, 2 pins are required to interface.
- *  For Arduino UNOs, thats SCL -> Analog 5, SDA -> Analog 4.
- *
- *  BSD license, all text above must be included in any redistribution
- */
+#include "MotorDriver.h"
 
-#include "MotorDriver_PCA9685_8838.h"
-
+#include <Arduino.h>
 #include <Wire.h>
 
-//#define ENABLE_DEBUG_OUTPUT
+#include "MotorDriverPin.h"
 
-/*!
- *  @brief  Instantiates a new PCA9685 PWM driver chip with the I2C address on a
- * TwoWire interface
- */
-MotorDriver_PCA9685_8838::MotorDriver_PCA9685_8838()
-    : _i2caddr(PCA9685_I2C_ADDRESS), _i2c(&Wire) {}
+/*******************************************************************************
+yfrobot PCA9685 IIC 4路电机驱动模块 专用函数
+*******************************************************************************/
 
 /*!
  *  @brief  Instantiates a new PCA9685 PWM driver chip with the I2C address on a
  * TwoWire interface
  *  @param  addr The 7-bit I2C address to locate this chip, default is 0x40
  */
-MotorDriver_PCA9685_8838::MotorDriver_PCA9685_8838(const uint8_t addr)
-    : _i2caddr(addr), _i2c(&Wire) {}
+// void MotorDriver::setAddress(const uint8_t addr) : _i2caddr(addr),
+// _i2c(&Wire) {}
+void MotorDriver::setAddress(const uint8_t addr) {
+  _i2caddr = addr;
+  _i2c = &Wire;
+}
 
 /*!
  *  @brief  Instantiates a new PCA9685 PWM driver chip with the I2C address on a
@@ -40,18 +28,19 @@ MotorDriver_PCA9685_8838::MotorDriver_PCA9685_8838(const uint8_t addr)
  *  @param  i2c  A reference to a 'TwoWire' object that we'll use to communicate
  *  with
  */
-MotorDriver_PCA9685_8838::MotorDriver_PCA9685_8838(const uint8_t addr, TwoWire &i2c)
-    : _i2caddr(addr), _i2c(&i2c) {}
+void MotorDriver::setAddress(const uint8_t addr, TwoWire &i2c) {
+  _i2caddr = addr;
+  _i2c = &i2c;
+}
 
 /*!
  *  @brief  Setups the I2C interface and hardware
- *  @param  prescale
- *          Sets External Clock (Optional)
+ *  @param  prescale Sets External Clock (Optional)
  */
-void MotorDriver_PCA9685_8838::begin(uint8_t prescale) {
+void MotorDriver::begin(uint8_t prescale) {
   _i2c->begin();
   reset();
-  _inited = false;  // 重置初始化引脚标志
+
   if (prescale) {
     setExtClk(prescale);
   } else {
@@ -60,34 +49,14 @@ void MotorDriver_PCA9685_8838::begin(uint8_t prescale) {
   }
   // set the default internal frequency
   setOscillatorFrequency(FREQUENCY_OSCILLATOR);
-  initPin();  // 初始化引脚通道
 }
 
 /*!
  *  @brief  Sends a reset command to the PCA9685 chip over I2C
  */
-void MotorDriver_PCA9685_8838::reset() {
+void MotorDriver::reset() {
   write8(PCA9685_MODE1, MODE1_RESTART);
   delay(10);
-}
-
-/*!
- *  @brief  Puts board into sleep mode
- */
-void MotorDriver_PCA9685_8838::sleep() {
-  uint8_t awake = read8(PCA9685_MODE1);
-  uint8_t sleep = awake | MODE1_SLEEP;  // set sleep bit high
-  write8(PCA9685_MODE1, sleep);
-  delay(5);  // wait until cycle ends for sleep to be active
-}
-
-/*!
- *  @brief  Wakes board from sleep
- */
-void MotorDriver_PCA9685_8838::wakeup() {
-  uint8_t sleep = read8(PCA9685_MODE1);
-  uint8_t wakeup = sleep & ~MODE1_SLEEP;  // set sleep bit low
-  write8(PCA9685_MODE1, wakeup);
 }
 
 /*!
@@ -95,7 +64,7 @@ void MotorDriver_PCA9685_8838::wakeup() {
  *  @param  prescale
  *          Configures the prescale value to be used by the external clock
  */
-void MotorDriver_PCA9685_8838::setExtClk(uint8_t prescale) {
+void MotorDriver::setExtClk(uint8_t prescale) {
   uint8_t oldmode = read8(PCA9685_MODE1);
   uint8_t newmode = (oldmode & ~MODE1_RESTART) | MODE1_SLEEP;  // sleep
   write8(PCA9685_MODE1, newmode);  // go to sleep, turn off internal oscillator
@@ -120,7 +89,7 @@ void MotorDriver_PCA9685_8838::setExtClk(uint8_t prescale) {
  *  @brief  Sets the PWM frequency for the entire chip, up to ~1.6 KHz
  *  @param  freq Floating point frequency that we will attempt to match
  */
-void MotorDriver_PCA9685_8838::setPWMFreq(float freq) {
+void MotorDriver::setPWMFreq(float freq) {
 #ifdef ENABLE_DEBUG_OUTPUT
   Serial.print("Attempting to set freq ");
   Serial.println(freq);
@@ -161,7 +130,7 @@ void MotorDriver_PCA9685_8838::setPWMFreq(float freq) {
  *  only be driven in open drain mode.
  *  @param  totempole Totempole if true, open drain if false.
  */
-void MotorDriver_PCA9685_8838::setOutputMode(bool totempole) {
+void MotorDriver::setOutputMode(bool totempole) {
   uint8_t oldmode = read8(PCA9685_MODE2);
   uint8_t newmode;
   if (totempole) {
@@ -182,16 +151,14 @@ void MotorDriver_PCA9685_8838::setOutputMode(bool totempole) {
  *  @brief  Reads set Prescale from PCA9685
  *  @return prescale value
  */
-uint8_t MotorDriver_PCA9685_8838::readPrescale(void) {
-  return read8(PCA9685_PRESCALE);
-}
+uint8_t MotorDriver::readPrescale(void) { return read8(PCA9685_PRESCALE); }
 
 /*!
  *  @brief  Gets the PWM output of one of the PCA9685 pins
  *  @param  num One of the PWM output pins, from 0 to 15
  *  @return requested PWM output value
  */
-uint8_t MotorDriver_PCA9685_8838::getPWM(uint8_t num) {
+uint8_t MotorDriver::getPWM(uint8_t num) {
   _i2c->requestFrom((int)_i2caddr, PCA9685_LED0_ON_L + 4 * num, (int)4);
   return _i2c->read();
 }
@@ -202,7 +169,7 @@ uint8_t MotorDriver_PCA9685_8838::getPWM(uint8_t num) {
  *  @param  on At what point in the 4096-part cycle to turn the PWM output ON
  *  @param  off At what point in the 4096-part cycle to turn the PWM output OFF
  */
-void MotorDriver_PCA9685_8838::setPWM(uint8_t num, uint16_t on, uint16_t off) {
+void MotorDriver::setPWM(uint8_t num, uint16_t on, uint16_t off) {
 #ifdef ENABLE_DEBUG_OUTPUT
   Serial.print("Setting PWM ");
   Serial.print(num);
@@ -231,7 +198,7 @@ void MotorDriver_PCA9685_8838::setPWM(uint8_t num, uint16_t on, uint16_t off) {
  * from 0 to 4095 inclusive.
  *   @param  invert If true, inverts the output, defaults to 'false'
  */
-void MotorDriver_PCA9685_8838::setPin(uint8_t num, uint16_t val, bool invert) {
+void MotorDriver::setPin(uint8_t num, uint16_t val, bool invert) {
   // Clamp value between 0 and 4095 inclusive.
   val = min(val, (uint16_t)4095);
   if (invert) {
@@ -263,8 +230,7 @@ void MotorDriver_PCA9685_8838::setPin(uint8_t num, uint16_t val, bool invert) {
  *  @param  num One of the PWM output pins, from 0 to 15
  *  @param  Microseconds The number of Microseconds to turn the PWM output ON
  */
-void MotorDriver_PCA9685_8838::writeMicroseconds(uint8_t num,
-                                            uint16_t Microseconds) {
+void MotorDriver::writeMicroseconds(uint8_t num, uint16_t Microseconds) {
 #ifdef ENABLE_DEBUG_OUTPUT
   Serial.print("Setting PWM Via Microseconds on output");
   Serial.print(num);
@@ -312,167 +278,19 @@ void MotorDriver_PCA9685_8838::writeMicroseconds(uint8_t num,
  *  @returns The frequency the PCA9685 thinks it is running at (it cannot
  * introspect)
  */
-uint32_t MotorDriver_PCA9685_8838::getOscillatorFrequency(void) {
-  return _oscillator_freq;
-}
+uint32_t MotorDriver::getOscillatorFrequency(void) { return _oscillator_freq; }
 
 /*!
  *  @brief Setter for the internally tracked oscillator used for freq
  * calculations
  *  @param freq The frequency the PCA9685 should use for frequency calculations
  */
-void MotorDriver_PCA9685_8838::setOscillatorFrequency(uint32_t freq) {
+void MotorDriver::setOscillatorFrequency(uint32_t freq) {
   _oscillator_freq = freq;
 }
 
-/*!
- *  @brief set motor direction,
- *  @param m1Dir: motor M1 direction, eg: 0 - M1 motor default direction ,1 - M1
- * motor reverse direction;
- *  @param m2Dir: motor M2 direction;
- *  @param m3Dir: motor M3 direction;
- *  @param m4Dir: motor M4 direction;
- */
-void MotorDriver_PCA9685_8838::setMotorDirReverse(bool m1Dir, bool m2Dir, bool m3Dir,
-                                             bool m4Dir) {
-  _MOTORM1REVERSE = m1Dir;
-  _MOTORM2REVERSE = m2Dir;
-  _MOTORM3REVERSE = m3Dir;
-  _MOTORM4REVERSE = m4Dir;
-}
-
-/*!
- *  @brief set ALL motor direction,
- *  @param MAllDir: motor all direction, eg: 0 - all motor default direction ,1
- * - all motor reverse direction;
- */
-void MotorDriver_PCA9685_8838::setMotorDirReverse(bool MAllDir) {
-  _MOTORMALLREVERSE = MAllDir;
-}
-
-/*!
- *  @brief Drive single motor ,
- *  @param motorNum: motor number, eg:1 - M1 motor ;
- *  @param speed: speed: motor speed, range -4096 ~ 4096;
- *  DRV8838 Device Logic
- *  DIR 1 PWM 1  OUT1 L OUT2 H REVERSE
- *  DIR 0 PWM 1  OUT1 H OUT2 L FORWARD
- */
-void MotorDriver_PCA9685_8838::setSingleMotor(int8_t motorNum, int16_t speed) {
-  if (motorNum == M1) {
-    if (_MOTORM1REVERSE || _MOTORMALLREVERSE) speed = 0 - speed;
-    // MOTOR 1
-    if (speed > 0) {
-      setPin(_M1DIR, 0, 0);
-      setPin(_M1PWM, speed, 0);
-    } else if (speed < 0) {
-      setPin(_M1DIR, 4096, 0);
-      setPin(_M1PWM, 0 - speed, 0);
-    } else {
-      setPin(_M1PWM, 0, 0);
-    }
-  } else if (motorNum == M2) {
-    if (_MOTORM2REVERSE || _MOTORMALLREVERSE) speed = 0 - speed;
-    // MOTOR 2
-    if (speed > 0) {
-      setPin(_M2DIR, 0, 0);
-      setPin(_M2PWM, speed, 0);
-    } else if (speed < 0) {
-      setPin(_M2DIR, 4096, 0);
-      setPin(_M2PWM, 0 - speed, 0);
-    } else {
-      setPin(_M2PWM, 0, 0);
-    }
-  } else if (motorNum == M3) {
-    if (_MOTORM3REVERSE || _MOTORMALLREVERSE) speed = 0 - speed;
-    // MOTOR 3
-    if (speed > 0) {
-      setPin(_M3DIR, 0, 0);
-      setPin(_M3PWM, speed, 0);
-    } else if (speed < 0) {
-      setPin(_M3DIR, 4096, 0);
-      setPin(_M3PWM, 0 - speed, 0);
-    } else {
-      setPin(_M3PWM, 0, 0);
-    }
-  } else if (motorNum == M4) {
-    if (_MOTORM4REVERSE || _MOTORMALLREVERSE) speed = 0 - speed;
-    // MOTOR 4
-    if (speed > 0) {
-      setPin(_M4DIR, 0, 0);
-      setPin(_M4PWM, speed, 0);
-    } else if (speed < 0) {
-      setPin(_M4DIR, 4096, 0);
-      setPin(_M4PWM, 0 - speed, 0);
-    } else {
-      setPin(_M4PWM, 0, 0);
-    }
-  } else {
-#ifdef ENABLE_DEBUG_OUTPUT
-    Serial.print("Error: Motor number error.");
-#endif
-  }
-}
-
-/*!
- *  @brief Drive motor ,
- *  @param speedM1: M1 motor speed, range -4096 ~ 4096;
- *  @param speedM2: M2 motor speed, range -4096 ~ 4096;
- *  @param speedM3: M3 motor speed, range -4096 ~ 4096;
- *  @param speedM4: M4 motor speed, range -4096 ~ 4096;
- */
-void MotorDriver_PCA9685_8838::setMotor(int16_t speedM1, int16_t speedM2,
-                                   int16_t speedM3, int16_t speedM4) {
-  // MOTOR 1
-  setSingleMotor(M1, speedM1);
-  // MOTOR 2
-  setSingleMotor(M2, speedM2);
-  // MOTOR 3
-  setSingleMotor(M3, speedM3);
-  // MOTOR 4
-  setSingleMotor(M4, speedM4);
-}
-
-/*!
- *  @brief Drive ALL motor in the same speed.
- *  @param speedall: M1 M2 M3 M4 motor speed, range -4096 ~ 4096;
- */
-void MotorDriver_PCA9685_8838::setMotor(int16_t speedall) {
-  // MOTOR 1
-  setSingleMotor(M1, speedall);
-  // MOTOR 2
-  setSingleMotor(M2, speedall);
-  // MOTOR 3
-  setSingleMotor(M3, speedall);
-  // MOTOR 4
-  setSingleMotor(M4, speedall);
-}
-
-/*!
- *  @brief stop motor , Emergency stop / brake 紧急停止/刹车
- *  @param motorNum: motor number, eg:1 - M1 motor ;
- */
-void MotorDriver_PCA9685_8838::stopMotor(int8_t motorNum) {
-  if (motorNum == M1) {  // MOTOR 1
-    setPin(_M1PWM, 0, 0);
-  } else if (motorNum == M2) {  // MOTOR 2
-    setPin(_M2PWM, 0, 0);
-  } else if (motorNum == M3) {  // MOTOR 3
-    setPin(_M3PWM, 0, 0);
-  } else if (motorNum == M4) {  // MOTOR 4
-    setPin(_M4PWM, 0, 0);
-  } else if (motorNum == MAll) {  // MOTOR 1 2 3 4
-    setPin(_M1PWM, 0, 0);
-    setPin(_M2PWM, 0, 0);
-    setPin(_M3PWM, 0, 0);
-    setPin(_M4PWM, 0, 0);
-  } else {
-    /* code */
-  }
-}
-
 /******************* Low level I2C interface */
-uint8_t MotorDriver_PCA9685_8838::read8(uint8_t addr) {
+uint8_t MotorDriver::read8(uint8_t addr) {
   _i2c->beginTransmission(_i2caddr);
   _i2c->write(addr);
   _i2c->endTransmission();
@@ -481,23 +299,9 @@ uint8_t MotorDriver_PCA9685_8838::read8(uint8_t addr) {
   return _i2c->read();
 }
 
-void MotorDriver_PCA9685_8838::write8(uint8_t addr, uint8_t d) {
+void MotorDriver::write8(uint8_t addr, uint8_t d) {
   _i2c->beginTransmission(_i2caddr);
   _i2c->write(addr);
   _i2c->write(d);
   _i2c->endTransmission();
-}
-
-void MotorDriver_PCA9685_8838::initPin() {
-  if (!_inited) {
-    _M1DIR = 0;
-    _M1PWM = 1;
-    _M2DIR = 2;
-    _M2PWM = 3;
-    _M3DIR = 4;
-    _M3PWM = 5;
-    _M4DIR = 6;
-    _M4PWM = 7;
-    _inited = true;
-  }
 }

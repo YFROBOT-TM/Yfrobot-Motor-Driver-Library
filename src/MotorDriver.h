@@ -110,18 +110,23 @@ extern uint8_t SerialDebug;  // 外部访问 串口使能变量
 class MotorDriver {
  public:
   MotorDriver(uint8_t type);
+  MotorDriver(uint8_t type, uint8_t _dirPin, uint8_t _pwmPin);
+  MotorDriver(uint8_t type, uint8_t _dirPin, uint8_t _pwmPin, int8_t _offset);
+  MotorDriver(uint8_t type, uint8_t _dirPin, uint8_t _pwmPin, int8_t _offset, uint8_t _slpPin);
+  MotorDriver(uint8_t type, uint8_t _dirPin, uint8_t _pwmPin, int8_t _offset, uint8_t _slpPin, uint8_t _csPin);
   // Motor direction configuration - 电机方向配置
-  void motorConfig(bool MAllDir); // L298P PMR3 IIC_TB
+  void motorConfig(int8_t MAllDir); // L298P PMR3 IIC_TB
   void motorConfig(int8_t offsetA, int8_t offsetB); // L298P PMR3 
-  void motorConfig(bool m1Dir, bool m2Dir, bool m3Dir, bool m4Dir); // IIC_TB
-  void setMotor(int16_t speedA, int16_t speedB);  // Motor drive - L298P PMR3 
-
+  void motorConfig(int8_t m1Dir, int8_t m2Dir, int8_t m3Dir, int8_t m4Dir); // IIC_TB
+  // drive Motor 驱动电机
+  void setMotor(int16_t m_speed);
+  void setMotor(int16_t speedA, int16_t speedB);  // L298P PMR3 
+  void setMotor(int16_t speedM1, int16_t speedM2, int16_t speedM3, int16_t speedM4);  // 驱动电机
   void driverOneMotor(int8_t pin_d, int8_t pin_p, int16_t m_speed, int8_t m_offset = 1);
   
   // PCA9685 IIC
   void setAddress(const uint8_t addr);
   void setAddress(const uint8_t addr, TwoWire &i2c);
-
   void begin(uint8_t prescale = 0);
   void reset();
   void sleep();
@@ -139,10 +144,17 @@ class MotorDriver {
   uint32_t getOscillatorFrequency(void);
 
   void setSingleMotor(int8_t motorNum, int16_t speed);  // 驱动单个电机
-  void setMotor(int16_t speedM1, int16_t speedM2, int16_t speedM3,
-                int16_t speedM4);  // 驱动电机
-  void setMotor(int16_t speedall);  // 相同速度驱动所有电机
+  void setAllMotor(int16_t speedall);  // 相同速度驱动所有电机
   void stopMotor(int8_t motorNum);  // 刹车
+
+  // MD 
+  // void sleep();
+  // void wakeup();
+
+  // void setMotor(int16_t speed);   // 驱动电机
+  // void stopMotor(int8_t motorNum);  // 刹车
+  unsigned int getMotorCurrent();
+
 
  private:
   uint8_t _TYPE_MODULE;  // 模块类型
@@ -172,15 +184,23 @@ class MotorDriver {
   uint8_t _i2caddr;
   TwoWire *_i2c;
 
-  bool _MOTORM1REVERSE = 0;   /** motor M1 reverse 电机M1反向 **/
-  bool _MOTORM2REVERSE = 0;   /** motor M2 reverse 电机M2反向 **/
-  bool _MOTORM3REVERSE = 0;   /** motor M3 reverse 电机M3反向 **/
-  bool _MOTORM4REVERSE = 0;   /** motor M4 reverse 电机M4反向 **/
-  bool _MOTORMALLREVERSE = 0; /** all motor reverse 所有电机反向 **/
-
+  int8_t _MOTORM1REVERSE = 0;   /** motor M1 reverse 电机M1反向 **/
+  int8_t _MOTORM2REVERSE = 0;   /** motor M2 reverse 电机M2反向 **/
+  int8_t _MOTORM3REVERSE = 0;   /** motor M3 reverse 电机M3反向 **/
+  int8_t _MOTORM4REVERSE = 0;   /** motor M4 reverse 电机M4反向 **/
+  // int8_t _MOTORMALLREVERSE = 0; /** all motor reverse 所有电机反向 **/
   uint32_t _oscillator_freq;
+  void setSingleMotor(uint8_t _in1, uint8_t _in2, uint8_t _pwm, int16_t speed);
   uint8_t read8(uint8_t addr);
   void write8(uint8_t addr, uint8_t d);
+
+  // MD 系列电机驱动
+  uint8_t _MDIR_PIN;        // 电机 方向引脚
+  uint8_t _MPWM_PIN;        // 电机 PWM引脚
+  uint8_t _MCS_PIN;         // 电机 电流检测引脚 CS
+  uint8_t _MSLP_PIN;        // 电机 睡眠引脚
+
+  int8_t _OFFSET;       // 电机方向设置
 };
 
 #endif

@@ -1,78 +1,54 @@
 /***************************************************
-  Motor Test - L298P Motor Drive
+  Motor Test - MD Motor Drive
 
-  MA DIR-D4 PWM-D5;
-  MB DIR-D7 PWM-D7;
+  MD_01 , MD_02 , MD_03 , MD_04 , MD_GB36
 
   YFROBOT ZL
   08/13/2020
  ****************************************************/
+
 #include <MotorDriver.h>
 
-#define MOTORTYPE YF_IIC_TB   //
-uint8_t SerialDebug = 1; // 串口打印调试 0-否 1-是
+#define M1DIR 4
+#define M1PWM 5
+#define M2DIR 7
+#define M2PWM 6
+#define MSLP 8  // or #define MSLP -1 slp connect to the high
+#define M1CS A0
+#define M2CS A1
 
-// these constants are used to allow you to make your motor configuration
+// these constants are used to allow you to make your motor configuration 
 // line up with function names like forward.  Value can be 1 or -1
-const int offsetm1 = 1;
-const int offsetm2 = 1;
-const int offsetm3 = 1;
-const int offsetm4 = 1;
+const int offset1 = 1;
+const int offset2 = 1;
 
-// Initializing motors.
-MotorDriver motorDriver = MotorDriver(MOTORTYPE);
+// Initializing motors. 
+// MotorDriver_MD motor1 = MotorDriver_MD(M1DIR, M1PWM, 1, MSLP);
+// MotorDriver_MD motor2 = MotorDriver_MD(M2DIR, M2PWM, 1, MSLP);
+MotorDriver_MD motor1 = MotorDriver_MD(M1DIR, M1PWM, offset1, M1CS, MSLP);
+MotorDriver_MD motor2 = MotorDriver_MD(M2DIR, M2PWM, offset2, M2CS, MSLP);
 
 void setup() {
   Serial.begin(9600);
   Serial.println("Motor Drive test!");
-  motorDriver.begin();
-  motorDriver.motorConfig(offsetm1, offsetm2, offsetm3, offsetm4);
-  delay(1000);   // wait 2s
-  Serial.println("Start...");
 }
 
 void loop() {
-  motorDriver.setSingleMotor(M1, 4096);  // 电机M1全速正转
+  motor1.setMotor(255);  // 电机M1全速正转
+  motor2.setMotor(255);  // 电机M2全速正转
   delay(500);
-  motorDriver.setSingleMotor(M1, 0);  // 电机M1停止
+  motor1.setMotor(0);  // 电机M1停止
+  motor2.setMotor(0);  // 电机M2停止
   delay(500);
-  motorDriver.setSingleMotor(M2, -2048);  // 电机M2 50%速度反转
+  motor1.setMotor(-127);  // 电机M1 50%速度反转
+  motor2.setMotor(-127);  // 电机M1 50%速度反转
   delay(500);
-  motorDriver.setSingleMotor(M2, 0);  // 电机M2停止
+  motor1.setMotor(0);  // 电机M1停止
+  motor2.setMotor(0);  // 电机M2停止
   delay(500);
-  motorDriver.setSingleMotor(M3, 4096);  // 电机M3全速正转
-  delay(500);
-  motorDriver.setSingleMotor(M3, 0);  // 电机M3停止
-  delay(500);
-  motorDriver.setSingleMotor(M4, -2048);  // 电机M4 50%速度反转
-  delay(500);
-  motorDriver.setSingleMotor(M4, 0);  // 电机M4停止
-  delay(1000);
 
-  motorDriver.setMotor(0, 4096, 2048, 1024); // 电机M1停止,电机M2 全速正转,电机M3 50%正转,电机M4 25%正转
+  motor1.setMotor(255);  // 电机M1全速正转
+  motor2.setMotor(255);  // 电机M2全速正转
   delay(500);
-  motorDriver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4停止
-  delay(500);
-  motorDriver.setMotor(0, -1024, -2048, -4096);  // 电机M1停止,电机M2 25%反转,电机M3 50%反转,电机M4 全速反转,
-  delay(500);
-  motorDriver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4停止
-  delay(1000);
-
-  motorDriver.setMotor(4096);   // 电机M1/M2/M3/M4 全速正转
-  delay(500);
-  motorDriver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4 停止
-  delay(500);
-  motorDriver.setMotor(-4096);  // 电机M1/M2/M3/M4 全速反转
-  delay(500);
-  motorDriver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4 停止
-  delay(1000);
-
-  motorDriver.setMotor(4096, 4096, 4096, 4096);       // 电机M1/M2/M3/M4 全速正转
-  delay(500);
-  motorDriver.stopMotor(M1);    // 电机M1 刹车
-  delay(500);
-  motorDriver.setMotor(-4096, -4096, -4096, -4096);   // 电机M1/M2/M3/M4 全速反转
-  delay(500);
-  motorDriver.stopMotor(MAll);  // 电机M1/M2/M3/M4 刹车
-  delay(1500);
+  motor1.getMotorCurrent();  // 获取电流检测口的模拟值 - 输出电压与电流电流成正比（50mV/A)，电流为零时电压为0.05V
 }
