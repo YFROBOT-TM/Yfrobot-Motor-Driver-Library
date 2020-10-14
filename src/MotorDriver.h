@@ -14,6 +14,7 @@
 
 #include <Arduino.h>
 #include <Wire.h>  // IIC 电机驱动
+#include "MotorDriverPin.h"
 
 /* Define types of motor driver module. */
 #define YF_L298P 1   // yfrobot L298P module
@@ -103,6 +104,10 @@ extern uint8_t SerialDebug;  // 外部访问 串口使能变量
 #define M4 4
 #define MAll 5
 
+//positive negative constant
+#define DIRP 1
+#define DIRN -1
+
 /*!
  *  @brief  Class that stores state and functions for interacting with motor
  * chip
@@ -115,14 +120,16 @@ class MotorDriver {
   MotorDriver(uint8_t type, uint8_t _dirPin, uint8_t _pwmPin, int8_t _offset, uint8_t _slpPin);
   MotorDriver(uint8_t type, uint8_t _dirPin, uint8_t _pwmPin, int8_t _offset, uint8_t _slpPin, uint8_t _csPin);
   // Motor direction configuration - 电机方向配置
-  void motorConfig(int8_t MAllDir); // L298P PMR3 IIC_TB
+  void motorConfig(int8_t offsetAll); // L298P PMR3 IIC_TB
   void motorConfig(int8_t offsetA, int8_t offsetB); // L298P PMR3 
-  void motorConfig(int8_t m1Dir, int8_t m2Dir, int8_t m3Dir, int8_t m4Dir); // IIC_TB
+  void motorConfig(int8_t offsetM1, int8_t offsetM2, int8_t offsetM3, int8_t offsetM4); // IIC_TB
   // drive Motor 驱动电机
-  void setMotor(int16_t m_speed);
-  void setMotor(int16_t speedA, int16_t speedB);  // L298P PMR3 
-  void setMotor(int16_t speedM1, int16_t speedM2, int16_t speedM3, int16_t speedM4);  // 驱动电机
-  void driverOneMotor(int8_t pin_d, int8_t pin_p, int16_t m_speed, int8_t m_offset = 1);
+  void setMotor(int16_t _mspeed); // MD 1234 驱动电机
+  void setSingleMotor(uint8_t _mNum, int16_t _mspeed);  // IIC_TB、4WDMW 驱动单个电机 
+  void setMotor(int16_t speedA, int16_t speedB);  // L298P PMR3 双电机
+  void setMotor(int16_t speedM1, int16_t speedM2, int16_t speedM3, int16_t speedM4);  // IIC_TB、4WDMW 4路电机
+  void setAllMotor(int16_t speedall);  // 相同速度驱动所有电机
+  void driverOneMotor(uint8_t _dirPin, uint8_t _pwmPin, int16_t _mspeed, int8_t _moffset = 1);
   
   // PCA9685 IIC
   void setAddress(const uint8_t addr);
@@ -139,22 +146,14 @@ class MotorDriver {
   void setPin(uint8_t num, uint16_t val, bool invert = false);
   uint8_t readPrescale(void);
   void writeMicroseconds(uint8_t num, uint16_t Microseconds);
-
   void setOscillatorFrequency(uint32_t freq);
   uint32_t getOscillatorFrequency(void);
-
-  void setSingleMotor(int8_t motorNum, int16_t speed);  // 驱动单个电机
-  void setAllMotor(int16_t speedall);  // 相同速度驱动所有电机
-  void stopMotor(int8_t motorNum);  // 刹车
+  
+  void driverOneMotor_IIC(uint8_t _in1Pin, uint8_t _in2Pin, uint8_t _pwmPin, int16_t _mspeed, int8_t _moffset = 1);// IIC_TB
+  void stopMotor(uint8_t _mNum);  // 刹车
 
   // MD 
-  // void sleep();
-  // void wakeup();
-
-  // void setMotor(int16_t speed);   // 驱动电机
-  // void stopMotor(int8_t motorNum);  // 刹车
   unsigned int getMotorCurrent();
-
 
  private:
   uint8_t _TYPE_MODULE;  // 模块类型
@@ -184,13 +183,12 @@ class MotorDriver {
   uint8_t _i2caddr;
   TwoWire *_i2c;
 
-  int8_t _MOTORM1REVERSE = 0;   /** motor M1 reverse 电机M1反向 **/
-  int8_t _MOTORM2REVERSE = 0;   /** motor M2 reverse 电机M2反向 **/
-  int8_t _MOTORM3REVERSE = 0;   /** motor M3 reverse 电机M3反向 **/
-  int8_t _MOTORM4REVERSE = 0;   /** motor M4 reverse 电机M4反向 **/
-  // int8_t _MOTORMALLREVERSE = 0; /** all motor reverse 所有电机反向 **/
+  int8_t _OFFSETM1;   /** motor M1 reverse 电机M1反向 **/
+  int8_t _OFFSETM2;   /** motor M2 reverse 电机M2反向 **/
+  int8_t _OFFSETM3;   /** motor M3 reverse 电机M3反向 **/
+  int8_t _OFFSETM4;   /** motor M4 reverse 电机M4反向 **/
+
   uint32_t _oscillator_freq;
-  void setSingleMotor(uint8_t _in1, uint8_t _in2, uint8_t _pwm, int16_t speed);
   uint8_t read8(uint8_t addr);
   void write8(uint8_t addr, uint8_t d);
 

@@ -9,11 +9,9 @@
  *  BSD license, all text above must be included in any redistribution
  */
 
-#include "MotorDriver.h"
-
 #include <Arduino.h>
 #include <Wire.h>
-
+#include "MotorDriver.h"
 #include "MotorDriverPin.h"
 
 //#define ENABLE_DEBUG_OUTPUT
@@ -24,8 +22,8 @@
 MotorDriver::MotorDriver(uint8_t type) {
   _TYPE_MODULE = type;
   if (_TYPE_MODULE == YF_L298P || _TYPE_MODULE == YF_PMR3) {
-    _OFFSETA = 1;
-    _OFFSETB = 1;
+    _OFFSETA = DIRP;
+    _OFFSETB = DIRP;
     _MADIRPIN = YF_LP_ADIR_PIN;
     _MAPWMPIN = YF_LP_APWM_PIN;
     _MBDIRPIN = YF_LP_BDIR_PIN;
@@ -36,6 +34,10 @@ MotorDriver::MotorDriver(uint8_t type) {
     pinMode(_MBPWMPIN, OUTPUT);
   } else if (_TYPE_MODULE == YF_IIC_TB) {
     setAddress(PCA9685_I2C_ADDRESS);
+    _OFFSETM1 = DIRP;
+    _OFFSETM2 = DIRP;
+    _OFFSETM3 = DIRP;
+    _OFFSETM4 = DIRP;
     _M1IN1 = YF_PCA9685_CH0;   // 电机M1 输入1
     _M1IN2 = YF_PCA9685_CH1;   // 电机M1 输入2
     _M1PWM = YF_PCA9685_CH2;   // 电机M1 PWM
@@ -49,8 +51,8 @@ MotorDriver::MotorDriver(uint8_t type) {
     _M4IN2 = YF_PCA9685_CH12;  // 电机M4 输入2
     _M4PWM = YF_PCA9685_CH13;  // 电机M4 PWM
   } else if (_TYPE_MODULE == YF_VALON) {
-    _OFFSETA = -1;
-    _OFFSETB = -1;
+    _OFFSETA = DIRN;
+    _OFFSETB = DIRN;
     _MADIRPIN = YF_VALON_LDIR_PIN;
     _MAPWMPIN = YF_VALON_LPWM_PIN;
     _MBDIRPIN = YF_VALON_RDIR_PIN;
@@ -60,6 +62,10 @@ MotorDriver::MotorDriver(uint8_t type) {
     pinMode(_MBDIRPIN, OUTPUT);
     pinMode(_MBPWMPIN, OUTPUT);
   } else if (_TYPE_MODULE == YF_4WDMW) {
+    _OFFSETM1 = DIRP;
+    _OFFSETM2 = DIRP;
+    _OFFSETM3 = DIRP;
+    _OFFSETM4 = DIRP;
     pinMode(YF_4WDMW_M1DIR_PIN, OUTPUT);
     pinMode(YF_4WDMW_M1PWM_PIN, OUTPUT);
     pinMode(YF_4WDMW_M2DIR_PIN, OUTPUT);
@@ -96,7 +102,7 @@ MotorDriver::MotorDriver(uint8_t type, uint8_t _dirPin, uint8_t _pwmPin) {
 MotorDriver::MotorDriver(uint8_t type, uint8_t _dirPin, uint8_t _pwmPin,
                          int8_t _offset) {
   _TYPE_MODULE = type;
-  _offset = _offset >= 0 ? 1 : -1;  // 限制正反方向值 1、-1
+  _offset = _offset >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
   if (_TYPE_MODULE == YF_MD01 || _TYPE_MODULE == YF_MD02 ||
       _TYPE_MODULE == YF_MD03 || _TYPE_MODULE == YF_MD04) {
     _OFFSET = _offset;
@@ -116,7 +122,7 @@ MotorDriver::MotorDriver(uint8_t type, uint8_t _dirPin, uint8_t _pwmPin,
 MotorDriver::MotorDriver(uint8_t type, uint8_t _dirPin, uint8_t _pwmPin,
                          int8_t _offset, uint8_t _slpPin) {
   _TYPE_MODULE = type;
-  _offset = _offset >= 0 ? 1 : -1;  // 限制正反方向值 1、-1
+  _offset = _offset >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
   if (_TYPE_MODULE == YF_MD01 || _TYPE_MODULE == YF_MD02 ||
       _TYPE_MODULE == YF_MD03 || _TYPE_MODULE == YF_MD04) {
     _OFFSET = _offset;
@@ -140,7 +146,7 @@ MotorDriver::MotorDriver(uint8_t type, uint8_t _dirPin, uint8_t _pwmPin,
 MotorDriver::MotorDriver(uint8_t type, uint8_t _dirPin, uint8_t _pwmPin,
                          int8_t _offset, uint8_t _slpPin, uint8_t _csPin) {
   _TYPE_MODULE = type;
-  _offset = _offset >= 0 ? 1 : -1;  // 限制正反方向值 1、-1
+  _offset = _offset >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
   if (_TYPE_MODULE == YF_MD01 || _TYPE_MODULE == YF_MD02 ||
       _TYPE_MODULE == YF_MD03 || _TYPE_MODULE == YF_MD04) {
     _OFFSET = _offset;
@@ -158,19 +164,18 @@ MotorDriver::MotorDriver(uint8_t type, uint8_t _dirPin, uint8_t _pwmPin,
 
 /*!
  *  @brief set ALL motor direction,
- *  @param MAllDir: motor all direction, eg: 1 - all motor default direction ,-1
- * - all motor reverse direction;
+ *  @param offsetAll: motor all direction, eg: 1 - all motor default direction,-1 - all motor reverse direction;
  */
-void MotorDriver::motorConfig(int8_t MAllDir) {
-  MAllDir = MAllDir >= 0 ? 1 : -1;  // 限制正反方向值 1、-1
+void MotorDriver::motorConfig(int8_t offsetAll) {
+  offsetAll = offsetAll >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
   if (_TYPE_MODULE == YF_IIC_TB) {
-    _MOTORM1REVERSE = MAllDir;
-    _MOTORM2REVERSE = MAllDir;
-    _MOTORM3REVERSE = MAllDir;
-    _MOTORM4REVERSE = MAllDir;
+    _OFFSETM1 = offsetAll;
+    _OFFSETM2 = offsetAll;
+    _OFFSETM3 = offsetAll;
+    _OFFSETM4 = offsetAll;
   } else if (_TYPE_MODULE == YF_L298P || _TYPE_MODULE == YF_PMR3) {
-    _OFFSETA = MAllDir;
-    _OFFSETB = MAllDir;
+    _OFFSETA = offsetAll;
+    _OFFSETB = offsetAll;
   }
 }
 
@@ -180,8 +185,8 @@ void MotorDriver::motorConfig(int8_t MAllDir) {
  *  @param offsetB: Value can be 1 or -1;
  */
 void MotorDriver::motorConfig(int8_t offsetA = 1, int8_t offsetB = 1) {
-  offsetA = offsetA >= 0 ? 1 : -1;  // 限制正反方向值 1、-1
-  offsetB = offsetB >= 0 ? 1 : -1;  // 限制正反方向值 1、-1
+  offsetA = offsetA >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
+  offsetB = offsetB >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
   if (_TYPE_MODULE == YF_L298P || _TYPE_MODULE == YF_PMR3) {
     _OFFSETA = offsetA;
     _OFFSETB = offsetB;
@@ -193,61 +198,61 @@ void MotorDriver::motorConfig(int8_t offsetA = 1, int8_t offsetB = 1) {
 
 /*!
  *  @brief set motor direction,
- *  @param m1Dir: motor M1 direction, eg: 1 - M1 motor default direction ,1 - M1
- * motor reverse direction;
- *  @param m2Dir: motor M2 direction;
- *  @param m3Dir: motor M3 direction;
- *  @param m4Dir: motor M4 direction;
+ *  @param offsetM1: motor M1 direction, eg: 1 - M1 default direction ,1 - M1 reverse direction;
+ *  @param offsetM2: motor M2 direction;
+ *  @param offsetM3: motor M3 direction;
+ *  @param offsetM4: motor M4 direction;
  */
-void MotorDriver::motorConfig(int8_t m1Dir, int8_t m2Dir, int8_t m3Dir,
-                              int8_t m4Dir) {
-  m1Dir = m1Dir >= 0 ? 1 : -1;  // 限制正反方向值 1、-1
-  m2Dir = m2Dir >= 0 ? 1 : -1;  // 限制正反方向值 1、-1
-  m3Dir = m3Dir >= 0 ? 1 : -1;  // 限制正反方向值 1、-1
-  m4Dir = m4Dir >= 0 ? 1 : -1;  // 限制正反方向值 1、-1
+void MotorDriver::motorConfig(int8_t offsetM1, int8_t offsetM2, int8_t offsetM3,
+                              int8_t offsetM4) {
+  offsetM1 = offsetM1 >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
+  offsetM2 = offsetM2 >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
+  offsetM3 = offsetM3 >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
+  offsetM4 = offsetM4 >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
   if (_TYPE_MODULE == YF_IIC_TB) {
-    _MOTORM1REVERSE = m1Dir;
-    _MOTORM2REVERSE = m2Dir;
-    _MOTORM3REVERSE = m3Dir;
-    _MOTORM4REVERSE = m4Dir;
+    _OFFSETM1 = offsetM1;
+    _OFFSETM2 = offsetM2;
+    _OFFSETM3 = offsetM3;
+    _OFFSETM4 = offsetM4;
   }
 }
 
 /*!
  *  @brief Drive motor , 1 Motor 固定引脚
- *  @param pin_d: motor dir pin;
- *  @param pin_p: motor pwm pin;
- *  @param m_speed: motor speed, range -255 ~ 255;
+ *  @param _dirPin: motor dir pin;
+ *  @param _pwmPin: motor pwm pin;
+ *  @param _mspeed: motor speed, range -255 ~ 255;
+ *  @param _moffset: motor direction, eg: 1 - default direction ,-1 - reverse direction;
  */
-void MotorDriver::driverOneMotor(int8_t pin_d, int8_t pin_p, int16_t m_speed,
-                                 int8_t m_offset = 1) {
-  m_offset = m_offset >= 0 ? 1 : -1;  // 限制正反方向值 1、-1
-  m_speed = max(m_speed, 255);
-  m_speed = min(-255, m_speed);
-  m_speed = m_speed * m_offset;
+void MotorDriver::driverOneMotor(uint8_t _dirPin, uint8_t _pwmPin,
+                                 int16_t _mspeed, int8_t _moffset = 1) {
+  _moffset = _moffset >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
+  _mspeed = max(_mspeed, 255);
+  _mspeed = min(-255, _mspeed);
+  _mspeed = _mspeed * _moffset;
 
-  if (m_speed > 0)
-    digitalWrite(pin_d, HIGH);
+  if (_mspeed > 0)
+    digitalWrite(_dirPin, HIGH);
   else
-    digitalWrite(pin_d, LOW);
-  analogWrite(pin_p, abs(m_speed));
+    digitalWrite(_dirPin, LOW);
+  analogWrite(_pwmPin, abs(_mspeed));
 }
 
 /*!
  *  @brief Drive motor in the speed. MD 1234
- *  @param m_speed: motor speed, range -255 ~ 255;
+ *  @param _mspeed: motor speed, range -255 ~ 255;
  */
-void MotorDriver::setMotor(int16_t m_speed) {
+void MotorDriver::setMotor(int16_t _mspeed) {
   if (_TYPE_MODULE == YF_MD01 || _TYPE_MODULE == YF_MD02 ||
       _TYPE_MODULE == YF_MD03 || _TYPE_MODULE == YF_MD04) {
-    m_speed = max(m_speed, 255);
-    m_speed = min(-255, m_speed);
-    m_speed = m_speed * _OFFSET;
-    if (m_speed < 0)
+    _mspeed = max(_mspeed, 255);
+    _mspeed = min(-255, _mspeed);
+    _mspeed = _mspeed * _OFFSET;
+    if (_mspeed < 0)
       digitalWrite(_MDIR_PIN, LOW);
     else
       digitalWrite(_MDIR_PIN, HIGH);
-    analogWrite(_MPWM_PIN, abs(m_speed));
+    analogWrite(_MPWM_PIN, abs(_mspeed));
   }
 }
 
@@ -257,8 +262,7 @@ void MotorDriver::setMotor(int16_t m_speed) {
  *  @param speedB: M2 motor speed, range -255 ~ 255;
  */
 void MotorDriver::setMotor(int16_t speedA, int16_t speedB) {
-  if (_TYPE_MODULE == YF_L298P || _TYPE_MODULE == YF_PMR3 ||
-      _TYPE_MODULE == YF_VALON) {
+  if (_TYPE_MODULE == YF_L298P || _TYPE_MODULE == YF_PMR3 || _TYPE_MODULE == YF_VALON) {
     if (SerialDebug == 1) Serial.println("Driver Motor - L298P/PMR3");
 
     speedA = max(speedA, 255);
@@ -289,53 +293,60 @@ void MotorDriver::setMotor(int16_t speedA, int16_t speedB) {
 
 /*!
  *  @brief Drive single motor ,
- *  @param _in1: moudle pin;
- *  @param _in2: moudle pin;
- *  @param _pwm: moudle pwm pin;
- *  @param speed: speed: motor speed, range -4096 ~ 4096;
+ *  @param _in1Pin: moudle pin;
+ *  @param _in2Pin: moudle pin;
+ *  @param _pwmPin: moudle pwm pin;
+ *  @param _mspeed: speed: motor speed, range -4096 ~ 4096;
  */
-void MotorDriver::setSingleMotor(uint8_t _in1, uint8_t _in2, uint8_t _pwm,
-                                 int16_t speed) {
-  if (speed > 0) {
-    setPin(_in1, 4096, 0);
-    setPin(_in2, 0, 0);
-    setPin(_pwm, speed, 0);
-  } else if (speed < 0) {
-    setPin(_in1, 0, 0);
-    setPin(_in2, 4096, 0);
-    setPin(_pwm, 0 - speed, 0);
+void MotorDriver::driverOneMotor_IIC(uint8_t _in1Pin, uint8_t _in2Pin,
+                                 uint8_t _pwmPin, int16_t _mspeed,
+                                 int8_t _moffset = 1) {
+  _moffset = _moffset >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
+  _mspeed = _mspeed * _moffset;
+  if (_mspeed > 0) {
+    setPin(_in1Pin, 4096, 0);
+    setPin(_in2Pin, 0, 0);
+    setPin(_pwmPin, _mspeed, 0);
+  } else if (_mspeed < 0) {
+    setPin(_in1Pin, 0, 0);
+    setPin(_in2Pin, 4096, 0);
+    setPin(_pwmPin, 0 - _mspeed, 0);
   } else {
-    setPin(_in1, 0, 0);
-    setPin(_in2, 0, 0);
+    setPin(_in1Pin, 0, 0);
+    setPin(_in2Pin, 0, 0);
   }
 }
 
 /*!
  *  @brief Drive single motor ,
- *  @param motorNum: motor number, eg:1 - M1 motor ;
- *  @param speed: speed: motor speed, range -4096 ~ 4096;
+ *  @param _mNum: motor number, eg:1 - M1 motor ... 5 - all motor;
+ *  @param _mspeed: motor speed, range -4096~4096 / -255~255;
  */
-void MotorDriver::setSingleMotor(int8_t motorNum, int16_t speed) {
-  if (motorNum == M1) {
-    speed = speed * _MOTORM1REVERSE;
-    // MOTOR 1
-    setSingleMotor(_M1IN1, _M1IN2, _M1PWM, speed);
-  } else if (motorNum == M2) {
-    speed = speed * _MOTORM2REVERSE;
-    // MOTOR 2
-    setSingleMotor(_M2IN1, _M2IN2, _M2PWM, speed);
-  } else if (motorNum == M3) {
-    speed = speed * _MOTORM3REVERSE;
-    // MOTOR 3
-    setSingleMotor(_M3IN1, _M3IN2, _M3PWM, speed);
-  } else if (motorNum == M4) {
-    speed = speed * _MOTORM4REVERSE;
-    // MOTOR 4
-    setSingleMotor(_M4IN1, _M4IN2, _M4PWM, speed);
-  } else {
+void MotorDriver::setSingleMotor(uint8_t _mNum, int16_t _mspeed) {
+  if (_TYPE_MODULE == YF_IIC_TB) {
+    if (_mNum == M1) { // MOTOR 1
+      driverOneMotor_IIC(_M1IN1, _M1IN2, _M1PWM, _mspeed, _OFFSETM1);
+    } else if (_mNum == M2) { // MOTOR 2
+      driverOneMotor_IIC(_M2IN1, _M2IN2, _M2PWM, _mspeed, _OFFSETM2);
+    } else if (_mNum == M3) { // MOTOR 3
+      driverOneMotor_IIC(_M3IN1, _M3IN2, _M3PWM, _mspeed, _OFFSETM3);
+    } else if (_mNum == M4) { // MOTOR 4
+      driverOneMotor_IIC(_M4IN1, _M4IN2, _M4PWM, _mspeed, _OFFSETM4);
+    } else {
 #ifdef ENABLE_DEBUG_OUTPUT
-    Serial.print("Error: Motor number error.");
+      Serial.print("Error: Motor number error.");
 #endif
+    }
+  } else if (_TYPE_MODULE == YF_4WDMW) {
+    if (_mNum == M1) { // MOTOR 1
+      driverOneMotor(YF_4WDMW_M1DIR_PIN, YF_4WDMW_M1PWM_PIN, _mspeed, _OFFSETM1);
+    } else if (_mNum == M2) { // MOTOR 2
+      driverOneMotor(YF_4WDMW_M2DIR_PIN, YF_4WDMW_M2PWM_PIN, _mspeed, _OFFSETM2);
+    } else if (_mNum == M3) { // MOTOR 3
+      driverOneMotor(YF_4WDMW_M3DIR_PIN, YF_4WDMW_M3PWM_PIN, _mspeed, _OFFSETM3);
+    } else if (_mNum == M4) { // MOTOR 4
+      driverOneMotor(YF_4WDMW_M4DIR_PIN, YF_4WDMW_M4PWM_PIN, _mspeed, _OFFSETM4);
+    }
   }
 }
 
@@ -359,10 +370,10 @@ void MotorDriver::setMotor(int16_t speedM1, int16_t speedM2, int16_t speedM3,
     // MOTOR 4
     setSingleMotor(M4, speedM4);
   } else if (_TYPE_MODULE == YF_4WDMW) {
-    driverOneMotor(YF_4WDMW_M1DIR_PIN, YF_4WDMW_M1PWM_PIN, speedM1, 1);
-    driverOneMotor(YF_4WDMW_M2DIR_PIN, YF_4WDMW_M2PWM_PIN, speedM2, 1);
-    driverOneMotor(YF_4WDMW_M3DIR_PIN, YF_4WDMW_M3PWM_PIN, speedM3, 1);
-    driverOneMotor(YF_4WDMW_M4DIR_PIN, YF_4WDMW_M4PWM_PIN, speedM4, 1);
+    driverOneMotor(YF_4WDMW_M1DIR_PIN, YF_4WDMW_M1PWM_PIN, speedM1, _OFFSETM1);
+    driverOneMotor(YF_4WDMW_M2DIR_PIN, YF_4WDMW_M2PWM_PIN, speedM2, _OFFSETM2);
+    driverOneMotor(YF_4WDMW_M3DIR_PIN, YF_4WDMW_M3PWM_PIN, speedM3, _OFFSETM3);
+    driverOneMotor(YF_4WDMW_M4DIR_PIN, YF_4WDMW_M4PWM_PIN, speedM4, _OFFSETM4);
   }
 }
 
@@ -383,10 +394,10 @@ void MotorDriver::setAllMotor(int16_t speedall) {
     // MOTOR 4
     setSingleMotor(M4, speedall);
   } else if (_TYPE_MODULE == YF_4WDMW) {
-    driverOneMotor(YF_4WDMW_M1DIR_PIN, YF_4WDMW_M1PWM_PIN, speedall, 1);
-    driverOneMotor(YF_4WDMW_M2DIR_PIN, YF_4WDMW_M2PWM_PIN, speedall, 1);
-    driverOneMotor(YF_4WDMW_M3DIR_PIN, YF_4WDMW_M3PWM_PIN, speedall, 1);
-    driverOneMotor(YF_4WDMW_M4DIR_PIN, YF_4WDMW_M4PWM_PIN, speedall, 1);
+    driverOneMotor(YF_4WDMW_M1DIR_PIN, YF_4WDMW_M1PWM_PIN, speedall, _OFFSETM1);
+    driverOneMotor(YF_4WDMW_M2DIR_PIN, YF_4WDMW_M2PWM_PIN, speedall, _OFFSETM2);
+    driverOneMotor(YF_4WDMW_M3DIR_PIN, YF_4WDMW_M3PWM_PIN, speedall, _OFFSETM3);
+    driverOneMotor(YF_4WDMW_M4DIR_PIN, YF_4WDMW_M4PWM_PIN, speedall, _OFFSETM4);
   } else if (_TYPE_MODULE == YF_MD01 || _TYPE_MODULE == YF_MD02 ||
              _TYPE_MODULE == YF_MD03 || _TYPE_MODULE == YF_MD04) {
     speedall = max(speedall, 255);
@@ -402,18 +413,18 @@ void MotorDriver::setAllMotor(int16_t speedall) {
 
 /*!
  *  @brief stop motor , Emergency stop / brake 紧急停止/刹车
- *  @param motorNum: motor number, eg:1 - M1 motor ;
+ *  @param _mNum: motor number, eg:1 - M1 motor ... 5 - all motor;
  */
-void MotorDriver::stopMotor(int8_t motorNum) {
-  if (motorNum == M1) {  // MOTOR 1
+void MotorDriver::stopMotor(uint8_t _mNum) {
+  if (_mNum == M1) {  // MOTOR 1
     setPin(_M1PWM, 0, 0);
-  } else if (motorNum == M2) {  // MOTOR 2
+  } else if (_mNum == M2) {  // MOTOR 2
     setPin(_M2PWM, 0, 0);
-  } else if (motorNum == M3) {  // MOTOR 3
+  } else if (_mNum == M3) {  // MOTOR 3
     setPin(_M3PWM, 0, 0);
-  } else if (motorNum == M4) {  // MOTOR 4
+  } else if (_mNum == M4) {  // MOTOR 4
     setPin(_M4PWM, 0, 0);
-  } else if (motorNum == MAll) {  // MOTOR 1 2 3 4
+  } else if (_mNum == MAll) {  // MOTOR 1 2 3 4
     setPin(_M1PWM, 0, 0);
     setPin(_M2PWM, 0, 0);
     setPin(_M3PWM, 0, 0);
@@ -457,6 +468,4 @@ void MotorDriver::wakeup() {
  *  获取电流检测引脚模拟电压值
  *  电流检测：50mV/A （仅在H桥工作时有效）
  */
-unsigned int MotorDriver::getMotorCurrent() {  
-  return analogRead(_MCS_PIN);
-}
+unsigned int MotorDriver::getMotorCurrent() { return analogRead(_MCS_PIN); }

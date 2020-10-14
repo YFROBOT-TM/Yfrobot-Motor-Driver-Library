@@ -1,24 +1,19 @@
 #######################################
 # Classes, datatypes (KEYWORD1)
 #######################################
-MotorDriver KEYWORD1
-YF_L298P	KEYWORD1
-YF_PMR3	KEYWORD1
-YF_MD01	KEYWORD1
-YF_MD02	KEYWORD1
-YF_MD03	KEYWORD1
-YF_MD04	KEYWORD1
-YF_IIC_TB	KEYWORD1
-YF_VALON	KEYWORD1
-YF_4WDMW	KEYWORD1
+MotorDriver	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
+setMotor	KEYWORD2
+setAllMotor	KEYWORD2
+setSingleMotor	KEYWORD2
+stopMotor	KEYWORD2
+motorConfig	KEYWORD2
 sleep	KEYWORD2
 wakeup	KEYWORD2
-setMotor	KEYWORD2
-motorConfig KEYWORD2
+setAddress	KEYWORD2
 begin	KEYWORD2
 reset	KEYWORD2
 setExtClk	KEYWORD2
@@ -31,11 +26,21 @@ readPrescale	KEYWORD2
 writeMicroseconds	KEYWORD2
 setOscillatorFrequency	KEYWORD2
 getOscillatorFrequency	KEYWORD2
+getMotorCurrent	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
-FREQUENCY_OSCILLATOR  LITERAL1
+FREQUENCY_OSCILLATOR	LITERAL1
+YF_L298P	LITERAL1
+YF_PMR3	LITERAL1
+YF_MD01	LITERAL1
+YF_MD02	LITERAL1
+YF_MD03	LITERAL1
+YF_MD04	LITERAL1
+YF_IIC_TB	LITERAL1
+YF_VALON	LITERAL1
+YF_4WDMW	LITERAL1
 YF_MD04_ADIR_PIN	LITERAL1
 YF_MD04_APWM_PIN	LITERAL1
 YF_MD04_ASLP_PIN	LITERAL1
@@ -44,3 +49,4 @@ YF_MD04_BPWM_PIN	LITERAL1
 YF_MD04_BSLP_PIN	LITERAL1
 YF_MD04_ACS_PIN	LITERAL1
 YF_MD04_BCS_PIN	LITERAL1
+

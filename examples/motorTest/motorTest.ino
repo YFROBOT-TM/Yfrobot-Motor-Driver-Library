@@ -25,12 +25,15 @@ const int offset2 = 1;
 // Initializing motors. 
 // MotorDriver_MD motor1 = MotorDriver_MD(M1DIR, M1PWM, 1, MSLP);
 // MotorDriver_MD motor2 = MotorDriver_MD(M2DIR, M2PWM, 1, MSLP);
-MotorDriver_MD motor1 = MotorDriver_MD(M1DIR, M1PWM, offset1, M1CS, MSLP);
-MotorDriver_MD motor2 = MotorDriver_MD(M2DIR, M2PWM, offset2, M2CS, MSLP);
+MotorDriver motor1 = MotorDriver(M1DIR, M1PWM, offset1, M1CS, MSLP);
+MotorDriver motor2 = MotorDriver(M2DIR, M2PWM, offset2, M2CS, MSLP);
 
 void setup() {
   Serial.begin(9600);
   Serial.println("Motor Drive test!");
+  motor1.wakeup();
+  motor1.sleep();
+  motor1.motorConfig();
 }
 
 void loop() {
