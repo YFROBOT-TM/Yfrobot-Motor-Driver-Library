@@ -9,7 +9,7 @@
 
 #include <MotorDriver.h>
 
-#define MOTORTYPE YF_MD04
+#define MOTORTYPE YF_MD
 
 // these constants are used to allow you to make your motor configuration 
 // line up with function names like forward.  Value can be 1 or -1

@@ -4,7 +4,8 @@
  *  This is a library for Motor driver.
  *
  *  Designed specifically to work with the Yfrobot Motor driver.
- *    L298P PM-R3(tb6612)
+ *    L298P PM-R3(tb6612) MD(MD_01 , MD_02 , MD_03 , MD_04 , MD_GB36)
+ *    IIC_TB(PCA9685 TB6612) valon(DRV8838X2) 4WDMW(DRV8838X4)
  *
  *  BSD license, all text above must be included in any redistribution
  */
@@ -19,10 +20,7 @@
 /* Define types of motor driver module. */
 #define YF_L298P 1   // yfrobot L298P module
 #define YF_PMR3 2    // yfrobot PM-R3 module
-#define YF_MD01 3    // yfrobot MD01 module
-#define YF_MD02 4    // yfrobot MD02 module
-#define YF_MD03 5    // yfrobot MD03 module
-#define YF_MD04 6    // yfrobot MD04 module
+#define YF_MD 3    // yfrobot MD01 module
 #define YF_IIC_TB 7  // yfrobot PCA9685 IIC 4路电机驱动模块
 #define YF_VALON 8   // yfrobot valon 小车 drv8838x2
 #define YF_4WDMW 9   // yfrobot 4wd 麦轮小车 drv8838x4
@@ -195,8 +193,8 @@ class MotorDriver {
   // MD 系列电机驱动
   uint8_t _MDIR_PIN;        // 电机 方向引脚
   uint8_t _MPWM_PIN;        // 电机 PWM引脚
-  uint8_t _MCS_PIN;         // 电机 电流检测引脚 CS
-  uint8_t _MSLP_PIN;        // 电机 睡眠引脚
+  int8_t _MCS_PIN;          // 电机 电流检测引脚 CS (当值为 -1时，未配置引脚)
+  int8_t _MSLP_PIN;         // 电机 睡眠引脚 (当值为 -1时，未配置引脚)
 
   int8_t _OFFSET;       // 电机方向设置
 };

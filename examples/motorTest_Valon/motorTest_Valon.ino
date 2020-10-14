@@ -7,8 +7,13 @@
 
 #include <MotorDriver.h>
 
-#define MOTORTYPE YF_VALON   //
+#define MOTORTYPE YF_VALON
 uint8_t SerialDebug = 1; // 串口打印调试 0-否 1-是
+
+// these constants are used to allow you to make your motor configuration
+// line up with function names like forward.  Value can be 1 or -1
+const int offsetL = 1;
+const int offsetR = 1;
 
 // Initializing motors.
 MotorDriver motorDriver = MotorDriver(MOTORTYPE);
@@ -16,6 +21,8 @@ MotorDriver motorDriver = MotorDriver(MOTORTYPE);
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  Serial.println("Valon Motor Drive test!");
+  motorDriver.motorConfig(offsetL,offsetR);
 }
 
 void loop() {

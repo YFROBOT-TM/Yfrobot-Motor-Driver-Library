@@ -12,9 +12,9 @@ uint8_t SerialDebug = 1; // 串口打印调试 0-否 1-是
 // these constants are used to allow you to make your motor configuration
 // line up with function names like forward.  Value can be 1 or -1
 const int offsetm1 = 1;
-const int offsetm2 = 1;
+const int offsetm2 = -1;
 const int offsetm3 = 1;
-const int offsetm4 = 1;
+const int offsetm4 = -1;
 
 // Initializing motors.
 MotorDriver motorDriver = MotorDriver(MOTORTYPE);
@@ -55,13 +55,13 @@ void loop() {
   motorDriver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4停止
   delay(1000);
 
-  motorDriver.setMotor(4096);   // 电机M1/M2/M3/M4 全速正转
+  motorDriver.setAllMotor(4096);   // 电机M1/M2/M3/M4 全速正转
   delay(500);
-  motorDriver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4 停止
+  motorDriver.setAllMotor(0);  // 电机M1/M2/M3/M4 停止
   delay(500);
-  motorDriver.setMotor(-4096);  // 电机M1/M2/M3/M4 全速反转
+  motorDriver.setAllMotor(-4096);  // 电机M1/M2/M3/M4 全速反转
   delay(500);
-  motorDriver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4 停止
+  motorDriver.setAllMotor(0);  // 电机M1/M2/M3/M4 停止
   delay(1000);
 
   motorDriver.setMotor(4096, 4096, 4096, 4096);       // 电机M1/M2/M3/M4 全速正转
