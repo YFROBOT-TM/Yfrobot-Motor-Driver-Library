@@ -20,10 +20,10 @@ uint8_t SerialDebug = 1; // 串口打印调试 0-否 1-是
 
 // these constants are used to allow you to make your motor configuration
 // line up with function names like forward.  Value can be 1 or -1
-const int offsetM1 = 1;
-const int offsetM2 = 1;
-const int offsetM3 = 1;
-const int offsetM4 = 1;
+const int offsetm1 = 1;
+const int offsetm2 = -1;
+const int offsetm3 = 1;
+const int offsetm4 = -1;
 
 /******************************************************************
    set pins connected to PS2 controller:
@@ -138,7 +138,7 @@ void setup() {
       break;
   }
   motorDriver.begin();
-  motorDriver.motorConfig(offsetM1, offsetM2, offsetM3, offsetM4);// 设置电机方向, 1 默认,-1 反向.
+  motorDriver.motorConfig(offsetm1, offsetm2, offsetm3, offsetm4);// 设置电机方向, 1 默认,-1 反向.
 
   // set pins to input with a pullup
   pinMode(M1PHASEAPIN, INPUT_PULLUP);
