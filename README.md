@@ -169,3 +169,17 @@ Methods：
 `motorDriver.setMotor(0, 255, 128, 64); // 电机M1停止,电机M2 全速正转,电机M3 50%正转,电机M4 25%正转`
 
 `motorDirver.setMotor(0, 0, 0, 0); // 电机M1/M2/M3/M4停止`
+
+驱动单电机，参数：电机速度 -255 ~ 255
+
+`motorDriver.setSingleMotor(M1, 255); // 电机M1全速正转`
+
+`motorDriver.setSingleMotor(M2, 255); // 电机M2全速正转`
+
+`motorDriver.setSingleMotor(M3, 255); // 电机M3全速正转`
+
+`motorDriver.setSingleMotor(M4, 255); // 电机M4全速正转`
+
+驱动所有电机，参数：电机速度 -255 ~ 255
+
+`motorDriver.setAllMotor(128); // 电机M1/M2/M3/M4 50%反转`
