@@ -29,7 +29,7 @@ Methods：
 
 设置所有电机反向， 参数：1-默认，-1-反向
 
-`motorDirver.motorConfig(0); // 所有电机默认方向`
+`motorDirver.motorConfig(1); // 所有电机默认方向`
 
 驱动单个电机，参数：电机序号 M1,M2,M3,M4；电机速度 -4096 ~ 4096
 
