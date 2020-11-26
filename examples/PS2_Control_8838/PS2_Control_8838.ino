@@ -13,7 +13,17 @@
 
 #include <PS2X_lib.h>  //for v1.8
 #include <PinChangeInterrupt.h>
-#include <MotorDriver_PCA9685_8838.h>
+#include <MotorDriver.h>
+
+#define MOTORTYPE YF_4WDMW
+uint8_t SerialDebug = 1; // 串口打印调试 0-否 1-是
+
+// these constants are used to allow you to make your motor configuration
+// line up with function names like forward.  Value can be 1 or -1
+const int offsetM1 = 1;
+const int offsetM2 = 1;
+const int offsetM3 = 1;
+const int offsetM4 = 1;
 
 /******************************************************************
    set pins connected to PS2 controller:
@@ -49,7 +59,7 @@
 #define M4PHASEBPIN 8
 
 PS2X ps2x; // create PS2 Controller Class
-MotorDriver_PCA9685_8838 motorDirver = MotorDriver_PCA9685_8838();// called this way, it uses the default address 0x40
+MotorDriver motorDriver = MotorDriver(MOTORTYPE);// called this way, it uses the default address 0x40
 
 //right now, the library does NOT support hot pluggable controllers, meaning
 //you must always either restart your Arduino after you connect the controller,
@@ -127,8 +137,8 @@ void setup() {
       Serial.println("Wireless Sony DualShock Controller found ");
       break;
   }
-  motorDirver.begin();
-  motorDirver.setMotorDirReverse(0, 1, 0, 1); // 设置电机方向, 0-默认,1-反向.
+  motorDriver.begin();
+  motorDriver.motorConfig(offsetM1, offsetM2, offsetM3, offsetM4);// 设置电机方向, 1 默认,-1 反向.
 
   // set pins to input with a pullup
   pinMode(M1PHASEAPIN, INPUT_PULLUP);
@@ -192,8 +202,8 @@ void loop() {
   if (ps2x.ButtonReleased(PSB_PAD_UP) || ps2x.ButtonReleased(PSB_PAD_RIGHT) ||
       ps2x.ButtonReleased(PSB_PAD_LEFT) || ps2x.ButtonReleased(PSB_PAD_DOWN) ||
       ps2x.ButtonReleased(PSB_SQUARE) || ps2x.ButtonReleased(PSB_CIRCLE)) {   //will be TRUE if button was JUST released
-    //    motorDirver.stopMotor(MAll);
-    motorDirver.setMotor(0, 0, 0, 0);
+    //    motorDriver.stopMotor(MAll);
+    motorDriver.setMotor(0, 0, 0, 0);
     encoderFlag = 0;
     closeInterrupt(); //关闭引脚中断
     //    Serial.println("free stop!");
@@ -208,17 +218,17 @@ void loop() {
     //    Serial.println(previousTime);
     //    pulseCount();
     if (moveDir == 0)
-      motorDirver.setMotor(MotorSpeedM1, MotorSpeedM2, MotorSpeedM3, MotorSpeedM4);
+      motorDriver.setMotor(MotorSpeedM1, MotorSpeedM2, MotorSpeedM3, MotorSpeedM4);
     else if (moveDir == 1)
-      motorDirver.setMotor(MotorSpeedM1, -MotorSpeedM2, -MotorSpeedM3, MotorSpeedM4);
+      motorDriver.setMotor(MotorSpeedM1, -MotorSpeedM2, -MotorSpeedM3, MotorSpeedM4);
     else if (moveDir == 2)
-      motorDirver.setMotor(-MotorSpeedM1, MotorSpeedM2, MotorSpeedM3, -MotorSpeedM4);
+      motorDriver.setMotor(-MotorSpeedM1, MotorSpeedM2, MotorSpeedM3, -MotorSpeedM4);
     else if (moveDir == 3)
-      motorDirver.setMotor(-MotorSpeedM1, -MotorSpeedM2, -MotorSpeedM3, -MotorSpeedM4);
+      motorDriver.setMotor(-MotorSpeedM1, -MotorSpeedM2, -MotorSpeedM3, -MotorSpeedM4);
     else if (moveDir == 4)
-      motorDirver.setMotor(-MotorSpeedM1, MotorSpeedM2, -MotorSpeedM3, MotorSpeedM4);
+      motorDriver.setMotor(-MotorSpeedM1, MotorSpeedM2, -MotorSpeedM3, MotorSpeedM4);
     else if (moveDir == 5)
-      motorDirver.setMotor(MotorSpeedM1, -MotorSpeedM2, MotorSpeedM3, -MotorSpeedM4);
+      motorDriver.setMotor(MotorSpeedM1, -MotorSpeedM2, MotorSpeedM3, -MotorSpeedM4);
   }
 
   if (ps2x.NewButtonState()) {        //will be TRUE if any button changes state (on to off, or off to on)
@@ -344,7 +354,7 @@ void loop() {
   }
 
   if (ps2x.ButtonReleased(PSB_L1) || ps2x.ButtonReleased(PSB_R1)) {   //will be TRUE if button was JUST released
-    motorDirver.stopMotor(MAll);
+    motorDriver.stopMotor(MAll);
     //    Serial.println("stop");
   }
 
@@ -368,7 +378,7 @@ void moveMotor(int16_t speed1, int16_t speed2, int16_t speed3, int16_t speed4) {
     speed4 = min(speed4, maxSpeed);
   else
     speed4 = max(speed4, -maxSpeed);
-  motorDirver.setMotor(speed1, speed2, speed3, speed4);
+  motorDriver.setMotor(speed1, speed2, speed3, speed4);
 #ifdef DEBUGESERIAL
   Serial.print("M1speed:");
   Serial.print(speed1);
