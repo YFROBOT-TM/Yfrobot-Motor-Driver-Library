@@ -15,7 +15,7 @@
 #include <PinChangeInterrupt.h>
 #include <MotorDriver.h>
 
-#define MOTORTYPE YF_4WDMW
+#define MOTORTYPE YF_IIC_TB
 uint8_t SerialDebug = 1; // 串口打印调试 0-否 1-是
 
 // these constants are used to allow you to make your motor configuration
