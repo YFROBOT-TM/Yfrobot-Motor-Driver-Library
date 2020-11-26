@@ -1,6 +1,10 @@
 /***************************************************
   Motor Test - IIC Motor Drive
 
+  motor driver library: https://github.com/YFROBOT-TM/Yfrobot-Motor-Driver-Library
+  motor driver iic Introduction: http://www.yfrobot.com.cn/wiki/index.php?title=MotorDriver_IIC
+  motor driver iic：https://item.taobao.com/item.htm?id=626324653253
+
   YFROBOT ZL
   08/13/2020
  ****************************************************/

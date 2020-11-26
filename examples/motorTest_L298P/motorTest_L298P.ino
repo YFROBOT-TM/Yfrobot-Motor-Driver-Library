@@ -3,6 +3,8 @@
 
   MA DIR-D4 PWM-D5;
   MB DIR-D7 PWM-D7;
+  
+  motor driver library: https://github.com/YFROBOT-TM/Yfrobot-Motor-Driver-Library
 
   YFROBOT ZL
   08/13/2020

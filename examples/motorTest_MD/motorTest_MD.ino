@@ -2,6 +2,8 @@
   Motor Test - MD Motor Drive
 
   MD_01 , MD_02 , MD_03 , MD_04 , MD_GB36
+  
+  motor driver library: https://github.com/YFROBOT-TM/Yfrobot-Motor-Driver-Library
 
   YFROBOT ZL
   10/14/2020

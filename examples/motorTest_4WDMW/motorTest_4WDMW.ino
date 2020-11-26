@@ -2,6 +2,8 @@
   Motor Test - 4WD mecanum wheel
   DRV8838 x 4
 
+  motor driver library: https://github.com/YFROBOT-TM/Yfrobot-Motor-Driver-Library
+
   YFROBOT ZL
   08/13/2020
  ****************************************************/

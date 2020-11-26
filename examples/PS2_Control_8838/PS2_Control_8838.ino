@@ -1,5 +1,7 @@
 /*
   PS2 control - PS2手柄控制4轮麦克纳姆轮小车
+  
+  motor driver library: https://github.com/YFROBOT-TM/Yfrobot-Motor-Driver-Library
 
   YFROBOT-ZL
   yfrobot@qq.com
