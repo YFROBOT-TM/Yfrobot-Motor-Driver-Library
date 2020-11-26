@@ -62,9 +62,9 @@ MotorDriver::MotorDriver(uint8_t type) {
     pinMode(_MBDIRPIN, OUTPUT);
     pinMode(_MBPWMPIN, OUTPUT);
   } else if (_TYPE_MODULE == YF_4WDMW) {
-    _OFFSETM1 = DIRP;
+    _OFFSETM1 = DIRN;
     _OFFSETM2 = DIRP;
-    _OFFSETM3 = DIRP;
+    _OFFSETM3 = DIRN;
     _OFFSETM4 = DIRP;
     pinMode(YF_4WDMW_M1DIR_PIN, OUTPUT);
     pinMode(YF_4WDMW_M1PWM_PIN, OUTPUT);
@@ -173,7 +173,7 @@ MotorDriver::MotorDriver(uint8_t type, uint8_t _dirPin, uint8_t _pwmPin,
  */
 void MotorDriver::motorConfig(int8_t offsetAll) {
   offsetAll = offsetAll >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
-  if (_TYPE_MODULE == YF_IIC_TB || _TYPE_MODULE == YF_4WDMW) {
+  if (_TYPE_MODULE == YF_IIC_TB) {
     _OFFSETM1 = offsetAll;
     _OFFSETM2 = offsetAll;
     _OFFSETM3 = offsetAll;
@@ -184,6 +184,11 @@ void MotorDriver::motorConfig(int8_t offsetAll) {
   } else if (_TYPE_MODULE == YF_VALON) {
     _OFFSETA = offsetAll*DIRN;
     _OFFSETB = offsetAll*DIRN;
+  } else if (_TYPE_MODULE == YF_4WDMW) {
+    _OFFSETM1 = offsetAll*DIRN;
+    _OFFSETM2 = offsetAll;
+    _OFFSETM3 = offsetAll*DIRN;
+    _OFFSETM4 = offsetAll;
   }
 }
 
@@ -217,10 +222,15 @@ void MotorDriver::motorConfig(int8_t offsetM1, int8_t offsetM2, int8_t offsetM3,
   offsetM2 = offsetM2 >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
   offsetM3 = offsetM3 >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
   offsetM4 = offsetM4 >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
-  if (_TYPE_MODULE == YF_IIC_TB || _TYPE_MODULE == YF_4WDMW) {
+  if (_TYPE_MODULE == YF_IIC_TB) {
     _OFFSETM1 = offsetM1;
     _OFFSETM2 = offsetM2;
     _OFFSETM3 = offsetM3;
+    _OFFSETM4 = offsetM4;
+  } else if (_TYPE_MODULE == YF_4WDMW) {
+    _OFFSETM1 = offsetM1*DIRN;
+    _OFFSETM2 = offsetM2;
+    _OFFSETM3 = offsetM3*DIRN;
     _OFFSETM4 = offsetM4;
   }
 }
