@@ -1,1 +1,1 @@
-忽略文件
+忽略文件 Ignore files
