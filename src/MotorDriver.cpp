@@ -4,7 +4,8 @@
  *  This is a library for Motor driver.
  *
  *  Designed specifically to work with the Yfrobot Motor driver.
- *    L298P PM-R3(tb6612)
+ *    L298P PM-R3(tb6612) MD(MD_01 , MD_02 , MD_03 , MD_04 , MD_GB36)
+ *    IIC_TB(PCA9685 TB6612) valon(DRV8838X2) 4WDMW(DRV8838X4)
  *
  *  BSD license, all text above must be included in any redistribution
  */
