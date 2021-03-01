@@ -8,6 +8,8 @@
  *    IIC_TB(PCA9685 TB6612) valon(DRV8838X2) 4WDMW(DRV8838X4)
  *
  *  BSD license, all text above must be included in any redistribution
+ *  
+ *  V0.0.5 IIC driver initialize pin
  */
 
 #include <Arduino.h>
@@ -228,6 +230,7 @@ void MotorDriver::motorConfig(int8_t offsetM1, int8_t offsetM2, int8_t offsetM3,
     _OFFSETM2 = offsetM2;
     _OFFSETM3 = offsetM3;
     _OFFSETM4 = offsetM4;
+    setAllMotor(0);
   } else if (_TYPE_MODULE == YF_4WDMW) {
     _OFFSETM1 = offsetM1*DIRN;
     _OFFSETM2 = offsetM2;
