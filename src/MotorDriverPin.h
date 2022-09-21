@@ -17,12 +17,17 @@
 #define YF_PCA9685_CH3  3   // Channel 3
 #define YF_PCA9685_CH4  4   // Channel 4
 #define YF_PCA9685_CH5  5   // Channel 5
+#define YF_PCA9685_CH6  6   // Channel 6
+#define YF_PCA9685_CH7  7   // Channel 7
+
 #define YF_PCA9685_CH8  8   // Channel 8
 #define YF_PCA9685_CH9  9   // Channel 9
 #define YF_PCA9685_CH10  10   // Channel 10
 #define YF_PCA9685_CH11  11   // Channel 11
 #define YF_PCA9685_CH12  12   // Channel 12
 #define YF_PCA9685_CH13  13   // Channel 13
+#define YF_PCA9685_CH14  14   // Channel 14
+#define YF_PCA9685_CH15  15   // Channel 15
 
 // valon DRV8838
 #define YF_VALON_LDIR_PIN  4   // motor left dir pin

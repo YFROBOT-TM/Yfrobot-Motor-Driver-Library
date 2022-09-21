@@ -22,6 +22,7 @@
 #define YF_PMR3 2    // yfrobot PM-R3 module
 #define YF_MD 3    // yfrobot MD01 module
 #define YF_IIC_TB 7  // yfrobot PCA9685 IIC 4路电机驱动模块
+#define YF_IIC_RZ 6  // yfrobot PCA9685 IIC RZ7889 4路电机驱动模块
 #define YF_VALON 8   // yfrobot valon 小车 drv8838x2
 #define YF_4WDMW 9   // yfrobot 4wd 麦轮小车 drv8838x4
 
@@ -58,8 +59,7 @@ extern uint8_t SerialDebug;  // 外部访问 串口使能变量
 #define MODE1_RESTART 0x80 /**< Restart enabled */
 // MODE2 bits
 #define MODE2_OUTNE_0 0x01 /**< Active LOW output enable input */
-#define MODE2_OUTNE_1 \
-  0x02 /**< Active LOW output enable input - high impedience */
+#define MODE2_OUTNE_1 0x02 /**< Active LOW output enable input - high impedience */
 #define MODE2_OUTDRV 0x04 /**< totem pole structure vs open-drain */
 #define MODE2_OCH 0x08    /**< Outputs change on ACK vs STOP */
 #define MODE2_INVRT 0x10  /**< Output logic state inverted */
@@ -164,7 +164,7 @@ class MotorDriver {
   uint8_t _MBDIRPIN;  // 电机MB 方向
   uint8_t _MBPWMPIN;  // 电机MB PWM
 
-  // PCA9685 IIC 4路电机驱动模块 iic 通道
+  // PCA9685 IIC 4路电机驱动模块-TB6612 iic 通道
   uint8_t _M1IN1;  // 电机M1 输入1
   uint8_t _M1IN2;  // 电机M1 输入2
   uint8_t _M1PWM;  // 电机M1 PWM
@@ -177,6 +177,16 @@ class MotorDriver {
   uint8_t _M4IN1;  // 电机M4 输入1
   uint8_t _M4IN2;  // 电机M4 输入2
   uint8_t _M4PWM;  // 电机M4 PWM
+  
+  // PCA9685 IIC 4路电机驱动模块-RZ7889 iic 通道
+  uint8_t _RZ_M1IN1;  // 电机M1 输入1
+  uint8_t _RZ_M1IN2;  // 电机M1 输入2
+  uint8_t _RZ_M2IN1;  // 电机M2 输入1
+  uint8_t _RZ_M2IN2;  // 电机M2 输入2
+  uint8_t _RZ_M3IN1;  // 电机M3 输入1
+  uint8_t _RZ_M3IN2;  // 电机M3 输入2
+  uint8_t _RZ_M4IN1;  // 电机M4 输入1
+  uint8_t _RZ_M4IN2;  // 电机M4 输入2
 
   uint8_t _i2caddr;
   TwoWire *_i2c;
