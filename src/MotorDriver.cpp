@@ -60,14 +60,14 @@ MotorDriver::MotorDriver(uint8_t type) {
     _OFFSETM2 = DIRP;
     _OFFSETM3 = DIRP;
     _OFFSETM4 = DIRP;
-    _RZ_M1IN1; = YF_PCA9685_CH0;    // RZ7889 电机M1 输入1
-    _RZ_M1IN2; = YF_PCA9685_CH1;    // RZ7889 电机M1 输入2
-    _RZ_M2IN1; = YF_PCA9685_CH2;    // RZ7889 电机M2 输入1
-    _RZ_M2IN2; = YF_PCA9685_CH3;    // RZ7889 电机M2 输入2
-    _RZ_M3IN1; = YF_PCA9685_CH7;    // RZ7889 电机M3 输入1
-    _RZ_M3IN2; = YF_PCA9685_CH6;    // RZ7889 电机M3 输入2
-    _RZ_M4IN1; = YF_PCA9685_CH5;    // RZ7889 电机M4 输入1
-    _RZ_M4IN2; = YF_PCA9685_CH4;    // RZ7889 电机M4 输入2
+    _RZ_M1IN1 = YF_PCA9685_CH0;    // RZ7889 电机M1 输入1
+    _RZ_M1IN2 = YF_PCA9685_CH1;    // RZ7889 电机M1 输入2
+    _RZ_M2IN1 = YF_PCA9685_CH2;    // RZ7889 电机M2 输入1
+    _RZ_M2IN2 = YF_PCA9685_CH3;    // RZ7889 电机M2 输入2
+    _RZ_M3IN1 = YF_PCA9685_CH7;    // RZ7889 电机M3 输入1
+    _RZ_M3IN2 = YF_PCA9685_CH6;    // RZ7889 电机M3 输入2
+    _RZ_M4IN1 = YF_PCA9685_CH5;    // RZ7889 电机M4 输入1
+    _RZ_M4IN2 = YF_PCA9685_CH4;    // RZ7889 电机M4 输入2
 
   } else if (_TYPE_MODULE == YF_VALON) {
     _OFFSETA = DIRN;
@@ -370,12 +370,10 @@ void MotorDriver::driverOneMotor_IIC(uint8_t _in1Pin, uint8_t _in2Pin,
  *  @brief Drive single motor , IIC RZ7889
  *  @param _in1Pin: moudle pin;
  *  @param _in2Pin: moudle pin;
- *  @param _pwmPin: moudle pwm pin;
  *  @param _mspeed: speed: motor speed, range -4096 ~ 4096;
  */
 void MotorDriver::driverOneMotor_IIC_RZ(uint8_t _in1Pin, uint8_t _in2Pin,
-                                 uint8_t _pwmPin, int16_t _mspeed,
-                                 int8_t _moffset = 1) {
+                                    int16_t _mspeed, int8_t _moffset = 1) {
   _moffset = _moffset >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
   _mspeed = _mspeed * _moffset;
   if (_mspeed > 0) {
@@ -387,6 +385,8 @@ void MotorDriver::driverOneMotor_IIC_RZ(uint8_t _in1Pin, uint8_t _in2Pin,
   } else {
     setPin(_in1Pin, 0, 0);
     setPin(_in2Pin, 0, 0);
+    // setPin(_in1Pin, 4096, 0);
+    // setPin(_in2Pin, 4096, 0);
   }
 }
 
@@ -412,13 +412,13 @@ void MotorDriver::setSingleMotor(uint8_t _mNum, int16_t _mspeed) {
     }
   } else if (_TYPE_MODULE == YF_IIC_RZ) { // IIC_RZ7889
     if (_mNum == M1) { // MOTOR 1
-      driverOneMotor_IIC_RZ(_M1IN1, _M1IN2, _M1PWM, _mspeed, _OFFSETM1);
+      driverOneMotor_IIC_RZ(_RZ_M1IN1, _RZ_M1IN2, _mspeed, _OFFSETM1);
     } else if (_mNum == M2) { // MOTOR 2
-      driverOneMotor_IIC_RZ(_M2IN1, _M2IN2, _M2PWM, _mspeed, _OFFSETM2);
+      driverOneMotor_IIC_RZ(_RZ_M2IN1, _RZ_M2IN2, _mspeed, _OFFSETM2);
     } else if (_mNum == M3) { // MOTOR 3
-      driverOneMotor_IIC_RZ(_M3IN1, _M3IN2, _M3PWM, _mspeed, _OFFSETM3);
+      driverOneMotor_IIC_RZ(_RZ_M3IN1, _RZ_M3IN2, _mspeed, _OFFSETM3);
     } else if (_mNum == M4) { // MOTOR 4
-      driverOneMotor_IIC_RZ(_M4IN1, _M4IN2, _M4PWM, _mspeed, _OFFSETM4);
+      driverOneMotor_IIC_RZ(_RZ_M4IN1, _RZ_M4IN2, _mspeed, _OFFSETM4);
     } else {
 #ifdef ENABLE_DEBUG_OUTPUT
       Serial.print("Error: Motor number error.");
@@ -521,22 +521,50 @@ void MotorDriver::setAllMotor(int16_t speedall) {
  *  @param _mNum: motor number, eg:1 - M1 motor ... 5 - all motor;
  */
 void MotorDriver::stopMotor(uint8_t _mNum) {
-  if (_mNum == M1) {  // MOTOR 1
-    setPin(_M1PWM, 0, 0);
-  } else if (_mNum == M2) {  // MOTOR 2
-    setPin(_M2PWM, 0, 0);
-  } else if (_mNum == M3) {  // MOTOR 3
-    setPin(_M3PWM, 0, 0);
-  } else if (_mNum == M4) {  // MOTOR 4
-    setPin(_M4PWM, 0, 0);
-  } else if (_mNum == MAll) {  // MOTOR 1 2 3 4
-    setPin(_M1PWM, 0, 0);
-    setPin(_M2PWM, 0, 0);
-    setPin(_M3PWM, 0, 0);
-    setPin(_M4PWM, 0, 0);
-  } else {
-    /* code */
-  }
+
+    if (_TYPE_MODULE == YF_IIC_TB) {
+        if (_mNum == M1) {  // MOTOR 1
+            setPin(_M1PWM, 0, 0);
+        } else if (_mNum == M2) {  // MOTOR 2
+            setPin(_M2PWM, 0, 0);
+        } else if (_mNum == M3) {  // MOTOR 3
+            setPin(_M3PWM, 0, 0);
+        } else if (_mNum == M4) {  // MOTOR 4
+            setPin(_M4PWM, 0, 0);
+        } else if (_mNum == MAll) {  // MOTOR 1 2 3 4
+            setPin(_M1PWM, 0, 0);
+            setPin(_M2PWM, 0, 0);
+            setPin(_M3PWM, 0, 0);
+            setPin(_M4PWM, 0, 0);
+        } else {
+            /* code */
+        }
+    } else if (_TYPE_MODULE == YF_IIC_RZ) { // IIC_RZ7889
+        if (_mNum == M1) {  // MOTOR 1
+            setPin(_RZ_M1IN1, 4096, 0);
+            setPin(_RZ_M1IN2, 4096, 0);
+        } else if (_mNum == M2) {  // MOTOR 2
+            setPin(_RZ_M2IN1, 4096, 0);
+            setPin(_RZ_M2IN2, 4096, 0);
+        } else if (_mNum == M3) {  // MOTOR 3
+            setPin(_RZ_M3IN1, 4096, 0);
+            setPin(_RZ_M3IN2, 4096, 0);
+        } else if (_mNum == M4) {  // MOTOR 4
+            setPin(_RZ_M4IN1, 4096, 0);
+            setPin(_RZ_M4IN2, 4096, 0);
+        } else if (_mNum == MAll) {  // MOTOR 1 2 3 4
+            setPin(_RZ_M1IN1, 4096, 0);
+            setPin(_RZ_M1IN2, 4096, 0);
+            setPin(_RZ_M2IN1, 4096, 0);
+            setPin(_RZ_M2IN2, 4096, 0);
+            setPin(_RZ_M3IN1, 4096, 0);
+            setPin(_RZ_M3IN2, 4096, 0);
+            setPin(_RZ_M4IN1, 4096, 0);
+            setPin(_RZ_M4IN2, 4096, 0);
+        } else {
+            /* code */
+        }
+    }
 }
 
 /*!

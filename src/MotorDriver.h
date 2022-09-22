@@ -129,7 +129,7 @@ class MotorDriver {
   void setAllMotor(int16_t speedall);  // 相同速度驱动所有电机
   void driverOneMotor(uint8_t _dirPin, uint8_t _pwmPin, int16_t _mspeed, int8_t _moffset = 1);
   
-  // PCA9685 IIC
+  // PCA9685 IIC (v1-TB6612X2 V2-RZ7889X4)
   void setAddress(const uint8_t addr);
   void setAddress(const uint8_t addr, TwoWire &i2c);
   void begin(uint8_t prescale = 0);
@@ -148,6 +148,7 @@ class MotorDriver {
   uint32_t getOscillatorFrequency(void);
   
   void driverOneMotor_IIC(uint8_t _in1Pin, uint8_t _in2Pin, uint8_t _pwmPin, int16_t _mspeed, int8_t _moffset = 1);// IIC_TB
+  void driverOneMotor_IIC_RZ(uint8_t _in1Pin, uint8_t _in2Pin, int16_t _mspeed, int8_t _moffset = 1);// IIC_RZ
   void stopMotor(uint8_t _mNum);  // 刹车
 
   // MD 

@@ -1,15 +1,58 @@
 # Yfrobot-Motor-Driver-Library
 YFROBOT Motor Driver Library for Arduino
 可用模块：
-L298P / PM-R3 / MD01 / MD02 / MD03 / MD04 / MD_GB36 / IIC_MOTORDRIVER 
+L298P / PM-R3 / MD01 / MD02 / MD03 / MD04 / MD_GB36 / IIC_MOTORDRIVER / IIC_MOTORDRIVER_RZ7889
 小车套件：
 VALON / 4WD Mecanum Wheel 
 
 调用库：
 
 `#include <MotorDriver.h>   // 包含头文件`
+#### MotorDriver_IIC V2 RZ7889 使用说明：
 
-#### MotorDriver_IIC 使用说明：
+适用对象：[Motor Driver iic](https://item.taobao.com/item.htm?id=626324653253)、[Motor Driver iic模块简介](http://www.yfrobot.com.cn/wiki/index.php?title=MotorDriver_IIC)
+
+创建对象：
+
+`MotorDriver motorDirver = MotorDriver(YF_IIC_RZ);`
+
+Methods：
+
+初始化
+
+`motorDirver.begin();`
+
+设置电机方向，参数：1-默认，-1-反向 (可选，不使用该函数，电机方向默认)
+
+`motorDirver.motorConfig(1, -1, 1, -1);// M1/M3 默认方向 M2/M4反向`
+
+设置所有电机反向， 参数：1-默认，-1-反向
+
+`motorDirver.motorConfig(1); // 所有电机默认方向`
+
+驱动单个电机，参数：电机序号 M1,M2,M3,M4；电机速度 -4096 ~ 4096
+
+`motorDirver.setSingleMotor(M1, 4096);   // M1电机全速正转`
+
+`motorDirver.setSingleMotor(M1, 0);   // M1电机自由停止`
+
+驱动4路电机，参数：电机速度 -4096 ~ 4096
+
+`motorDirver.setMotor(0, 4096, 2048, 1024);  // 电机M1自由停止,电机M2 全速正转,电机M3 50%正转,电机M4 25%正转`
+
+`motorDirver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4自由停止`
+
+`motorDirver.setAllMotor(4096); // 电机M1/M2/M3/M4 全速正转`
+
+`motorDirver.setAllMotor(0);  // 电机M1/M2/M3/M4自由停止`
+
+电机刹车/急停
+
+`motorDirver.stopMotor(M1);  // 电机M1 刹车`
+
+`motorDirver.stopMotor(MAll);  // 电机M1/M2/M3/M4 刹车`
+
+#### MotorDriver_IIC TB 使用说明：
 
 适用对象：[Motor Driver iic](https://item.taobao.com/item.htm?id=626324653253)、[Motor Driver iic模块简介](http://www.yfrobot.com.cn/wiki/index.php?title=MotorDriver_IIC)
 
