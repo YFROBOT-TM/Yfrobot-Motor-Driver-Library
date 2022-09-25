@@ -189,6 +189,26 @@ class MotorDriver {
   uint8_t _RZ_M4IN1;  // 电机M4 输入1
   uint8_t _RZ_M4IN2;  // 电机M4 输入2
 
+  uint8_t _RZ_M2IN2;  // 电机M2 输入2
+  uint8_t _RZ_M3IN1;  // 电机M3 输入1
+  uint8_t _RZ_M3IN2;  // 电机M3 输入2
+  uint8_t _RZ_M4IN1;  // 电机M4 输入1
+  uint8_t _RZ_M4IN2;  // 电机M4 输入2
+
+  
+/*************** PCA9685 IIC 4路电机驱动模块-RZ7889 舵机驱动引脚 参数 *****************/
+  #define S1 1
+  #define S2 2
+  #define S3 3
+  #define S4 4
+  #define S5 5
+
+  uint8_t _RZ_SERVO01 ;    // SERVO 01 
+  uint8_t _RZ_SERVO02 ;    // SERVO 02
+  uint8_t _RZ_SERVO03 ;    // SERVO 03
+  uint8_t _RZ_SERVO04 ;    // SERVO 04
+  uint8_t _RZ_SERVO05 ;    // SERVO 05
+
   uint8_t _i2caddr;
   TwoWire *_i2c;
 

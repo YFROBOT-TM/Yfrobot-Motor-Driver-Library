@@ -69,6 +69,12 @@ MotorDriver::MotorDriver(uint8_t type) {
     _RZ_M4IN1 = YF_PCA9685_CH5;    // RZ7889 电机M4 输入1
     _RZ_M4IN2 = YF_PCA9685_CH4;    // RZ7889 电机M4 输入2
 
+    _RZ_SERVO01 = YF_PCA9685_CH8;    // SERVO 01 
+    _RZ_SERVO02 = YF_PCA9685_CH9;    // SERVO 02
+    _RZ_SERVO03 = YF_PCA9685_CH10;    // SERVO 03
+    _RZ_SERVO04 = YF_PCA9685_CH11;    // SERVO 04
+    _RZ_SERVO05 = YF_PCA9685_CH12;    // SERVO 05
+    
   } else if (_TYPE_MODULE == YF_VALON) {
     _OFFSETA = DIRN;
     _OFFSETB = DIRN;
@@ -570,50 +576,21 @@ void MotorDriver::stopMotor(uint8_t _mNum) {
 
 /*!
  *  @brief 舵机控制 端口 S1-CH08 S2-CH09 S3-CH10 S4-CH11 S5-CH12
- *  @param _mNum: sevo number, eg:S1 S2 S3 S4 S5;
- *  @param _angle: motor number, eg:1 - M1 motor ... 5 - all motor;
+ *  @param _mNum: servo number, eg:S1 S2 S3 S4 S5;
+ *  @param _angle: servo angle, eg:0~180；（0~180度范围）
  */
 void MotorDriver::servoWrite(uint8_t _mNum, uint8_t _angle) {
-
-    if (_TYPE_MODULE == YF_IIC_TB) {
-        if (_mNum == M1) {  // MOTOR 1
-            setPin(_M1PWM, 0, 0);
-        } else if (_mNum == M2) {  // MOTOR 2
-            setPin(_M2PWM, 0, 0);
-        } else if (_mNum == M3) {  // MOTOR 3
-            setPin(_M3PWM, 0, 0);
-        } else if (_mNum == M4) {  // MOTOR 4
-            setPin(_M4PWM, 0, 0);
-        } else if (_mNum == MAll) {  // MOTOR 1 2 3 4
-            setPin(_M1PWM, 0, 0);
-            setPin(_M2PWM, 0, 0);
-            setPin(_M3PWM, 0, 0);
-            setPin(_M4PWM, 0, 0);
-        } else {
-            /* code */
-        }
-    } else if (_TYPE_MODULE == YF_IIC_RZ) { // IIC_RZ7889
-        if (_mNum == M1) {  // MOTOR 1
-            setPin(_RZ_M1IN1, 4096, 0);
-            setPin(_RZ_M1IN2, 4096, 0);
-        } else if (_mNum == M2) {  // MOTOR 2
-            setPin(_RZ_M2IN1, 4096, 0);
-            setPin(_RZ_M2IN2, 4096, 0);
-        } else if (_mNum == M3) {  // MOTOR 3
-            setPin(_RZ_M3IN1, 4096, 0);
-            setPin(_RZ_M3IN2, 4096, 0);
-        } else if (_mNum == M4) {  // MOTOR 4
-            setPin(_RZ_M4IN1, 4096, 0);
-            setPin(_RZ_M4IN2, 4096, 0);
-        } else if (_mNum == MAll) {  // MOTOR 1 2 3 4
-            setPin(_RZ_M1IN1, 4096, 0);
-            setPin(_RZ_M1IN2, 4096, 0);
-            setPin(_RZ_M2IN1, 4096, 0);
-            setPin(_RZ_M2IN2, 4096, 0);
-            setPin(_RZ_M3IN1, 4096, 0);
-            setPin(_RZ_M3IN2, 4096, 0);
-            setPin(_RZ_M4IN1, 4096, 0);
-            setPin(_RZ_M4IN2, 4096, 0);
+    if (_TYPE_MODULE == YF_IIC_RZ) { // IIC_RZ7889 SERVO
+        if (_mNum == S1) {  // SERVO 1
+            setPin(_RZ_SERVO01, 4096, 0);
+        } else if (_mNum == S2) {  // SERVO 2
+            setPin(_RZ_SERVO02, 4096, 0);
+        } else if (_mNum == S3) {  // SERVO 3
+            setPin(_RZ_SERVO03, 4096, 0);
+        } else if (_mNum == S4) {  // SERVO 4
+            setPin(_RZ_SERVO04, 4096, 0);
+        } else if (_mNum == S5) {  // SERVO 5
+            setPin(_RZ_SERVO05, 4096, 0);
         } else {
             /* code */
         }
