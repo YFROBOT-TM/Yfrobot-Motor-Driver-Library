@@ -27,6 +27,7 @@ writeMicroseconds	KEYWORD2
 setOscillatorFrequency	KEYWORD2
 getOscillatorFrequency	KEYWORD2
 getMotorCurrent	KEYWORD2
+servoWrite	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
@@ -55,4 +56,10 @@ M2	LITERAL1
 M3	LITERAL1
 M4	LITERAL1
 MAll	LITERAL1
-
+S1	LITERAL1
+S2	LITERAL1
+S3	LITERAL1
+S4	LITERAL1
+S5	LITERAL1
+SERVOMIN	LITERAL1
+SERVOMAX	LITERAL1

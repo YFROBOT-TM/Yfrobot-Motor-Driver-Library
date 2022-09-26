@@ -1,5 +1,6 @@
 /***************************************************
   Motor Test - IIC Motor Drive (RZ7889 x 4)
+  Servo Control
 
   motor driver library: https://github.com/YFROBOT-TM/Yfrobot-Motor-Driver-Library
   motor driver iic Introduction: http://www.yfrobot.com.cn/wiki/index.php?title=MotorDriver_IIC
@@ -28,11 +29,26 @@ void setup() {
   Serial.println("Motor Drive test!");
   motorDriver.begin();
   motorDriver.motorConfig(offsetm1, offsetm2, offsetm3, offsetm4);
+  motorDriver.setPWMFreq(50); // 控制舵机时，需要设置PWM频率 ~50
   delay(1000);   // wait 2s
   Serial.println("Start...");
 }
 
 void loop() {
+
+  motorDriver.servoSXWrite(S1, 0);
+  motorDriver.servoSXWrite(S2, 0);
+  motorDriver.servoSXWrite(S3, 0);
+  motorDriver.servoSXWrite(S4, 0);
+  motorDriver.servoSXWrite(S5, 0);
+  delay(1500);
+  motorDriver.servoSXWrite(S1, 180);
+  motorDriver.servoSXWrite(S2, 180);
+  motorDriver.servoSXWrite(S3, 180);
+  motorDriver.servoSXWrite(S4, 180);
+  motorDriver.servoSXWrite(S5, 180);
+  delay(1500);
+
   motorDriver.setSingleMotor(M1, 4096);  // 电机M1全速正转
   delay(500);
   motorDriver.setSingleMotor(M1, 0);  // 电机M1自由停止

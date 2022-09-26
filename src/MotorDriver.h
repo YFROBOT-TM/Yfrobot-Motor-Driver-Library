@@ -6,6 +6,7 @@
  *  Designed specifically to work with the Yfrobot Motor driver.
  *    L298P PM-R3(tb6612) MD(MD_01 , MD_02 , MD_03 , MD_04 , MD_GB36)
  *    IIC_TB(PCA9685 TB6612) valon(DRV8838X2) 4WDMW(DRV8838X4)
+ *    IIC_RZ(PCA9685 RZ7889X4)
  *
  *  BSD license, all text above must be included in any redistribution
  */
@@ -95,12 +96,21 @@ extern uint8_t SerialDebug;  // 外部访问 串口使能变量
 #define PCA9685_PRESCALE_MIN 3   /**< minimum prescale value */
 #define PCA9685_PRESCALE_MAX 255 /**< maximum prescale value */
 /*************** yfrobot PCA9685 IIC 4路电机驱动模块 参数 *****************/
-
 #define M1 1
 #define M2 2
 #define M3 3
 #define M4 4
 #define MAll 5
+
+/*************** PCA9685 IIC 4路电机驱动模块-RZ7889 舵机驱动引脚 参数 *****************/
+#define S1 YF_PCA9685_CH8   // SERVO 01 
+#define S2 YF_PCA9685_CH9   // SERVO 02
+#define S3 YF_PCA9685_CH10  // SERVO 03
+#define S4 YF_PCA9685_CH11  // SERVO 04
+#define S5 YF_PCA9685_CH12  // SERVO 05
+
+#define SERVOMIN  102 // This is the 'minimum' pulse length count (out of 4096)
+#define SERVOMAX  512 // This is the 'maximum' pulse length count (out of 4096)
 
 //positive negative constant
 #define DIRP 1
@@ -151,6 +161,9 @@ class MotorDriver {
   void driverOneMotor_IIC_RZ(uint8_t _in1Pin, uint8_t _in2Pin, int16_t _mspeed, int8_t _moffset = 1);// IIC_RZ
   void stopMotor(uint8_t _mNum);  // 刹车
 
+  // PCA9685 SERVO (V2-RZ7889)
+  void servoWrite(uint8_t _servoNum, uint16_t _angle);
+
   // MD 
   unsigned int getMotorCurrent();
 
@@ -188,26 +201,6 @@ class MotorDriver {
   uint8_t _RZ_M3IN2;  // 电机M3 输入2
   uint8_t _RZ_M4IN1;  // 电机M4 输入1
   uint8_t _RZ_M4IN2;  // 电机M4 输入2
-
-  uint8_t _RZ_M2IN2;  // 电机M2 输入2
-  uint8_t _RZ_M3IN1;  // 电机M3 输入1
-  uint8_t _RZ_M3IN2;  // 电机M3 输入2
-  uint8_t _RZ_M4IN1;  // 电机M4 输入1
-  uint8_t _RZ_M4IN2;  // 电机M4 输入2
-
-  
-/*************** PCA9685 IIC 4路电机驱动模块-RZ7889 舵机驱动引脚 参数 *****************/
-  #define S1 1
-  #define S2 2
-  #define S3 3
-  #define S4 4
-  #define S5 5
-
-  uint8_t _RZ_SERVO01 ;    // SERVO 01 
-  uint8_t _RZ_SERVO02 ;    // SERVO 02
-  uint8_t _RZ_SERVO03 ;    // SERVO 03
-  uint8_t _RZ_SERVO04 ;    // SERVO 04
-  uint8_t _RZ_SERVO05 ;    // SERVO 05
 
   uint8_t _i2caddr;
   TwoWire *_i2c;

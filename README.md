@@ -52,6 +52,18 @@ Methods：
 
 `motorDirver.stopMotor(MAll);  // 电机M1/M2/M3/M4 刹车`
 
+S1 S2 S3 S4 S5 舵机控制初始化频率
+
+`motorDriver.setPWMFreq(50); // 控制舵机时，需要设置PWM频率 ~50`
+
+舵机控制 S1 舵机运行到0
+
+`motorDriver.servoSXWrite(S1, 0);` 
+
+舵机控制 S1 舵机运行到180
+
+`motorDriver.servoSXWrite(S1, 180);` 
+
 #### MotorDriver_IIC TB 使用说明：
 
 适用对象：[Motor Driver iic](https://item.taobao.com/item.htm?id=626324653253)、[Motor Driver iic模块简介](http://www.yfrobot.com.cn/wiki/index.php?title=MotorDriver_IIC)

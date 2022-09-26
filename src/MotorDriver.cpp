@@ -10,6 +10,8 @@
  *  BSD license, all text above must be included in any redistribution
  *  
  *  V0.0.5 IIC driver initialize pin
+ *  V0.0.6 IIC driver RZ7889
+ *  V0.0.7 IIC driver RZ7889 - Servo control
  */
 
 #include <Arduino.h>
@@ -17,7 +19,7 @@
 #include "MotorDriver.h"
 #include "MotorDriverPin.h"
 
-//#define ENABLE_DEBUG_OUTPUT
+#define ENABLE_DEBUG_OUTPUT
 
 /*!
  *  @brief  Constructor. Mainly sets up pins.
@@ -56,6 +58,7 @@ MotorDriver::MotorDriver(uint8_t type) {
 
   } else if (_TYPE_MODULE == YF_IIC_RZ) {
     setAddress(PCA9685_I2C_ADDRESS);
+    // begin();
     _OFFSETM1 = DIRP;
     _OFFSETM2 = DIRP;
     _OFFSETM3 = DIRP;
@@ -68,12 +71,6 @@ MotorDriver::MotorDriver(uint8_t type) {
     _RZ_M3IN2 = YF_PCA9685_CH6;    // RZ7889 电机M3 输入2
     _RZ_M4IN1 = YF_PCA9685_CH5;    // RZ7889 电机M4 输入1
     _RZ_M4IN2 = YF_PCA9685_CH4;    // RZ7889 电机M4 输入2
-
-    _RZ_SERVO01 = YF_PCA9685_CH8;    // SERVO 01 
-    _RZ_SERVO02 = YF_PCA9685_CH9;    // SERVO 02
-    _RZ_SERVO03 = YF_PCA9685_CH10;    // SERVO 03
-    _RZ_SERVO04 = YF_PCA9685_CH11;    // SERVO 04
-    _RZ_SERVO05 = YF_PCA9685_CH12;    // SERVO 05
     
   } else if (_TYPE_MODULE == YF_VALON) {
     _OFFSETA = DIRN;
@@ -379,21 +376,22 @@ void MotorDriver::driverOneMotor_IIC(uint8_t _in1Pin, uint8_t _in2Pin,
  *  @param _mspeed: speed: motor speed, range -4096 ~ 4096;
  */
 void MotorDriver::driverOneMotor_IIC_RZ(uint8_t _in1Pin, uint8_t _in2Pin,
-                                    int16_t _mspeed, int8_t _moffset = 1) {
-  _moffset = _moffset >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
-  _mspeed = _mspeed * _moffset;
-  if (_mspeed > 0) {
-    setPin(_in1Pin, _mspeed, 0);
-    setPin(_in2Pin, 0, 0);
-  } else if (_mspeed < 0) {
-    setPin(_in1Pin, 0, 0);
-    setPin(_in2Pin, _mspeed, 0);
-  } else {
-    setPin(_in1Pin, 0, 0);
-    setPin(_in2Pin, 0, 0);
-    // setPin(_in1Pin, 4096, 0);
-    // setPin(_in2Pin, 4096, 0);
-  }
+                                    int16_t _mspeed, int8_t _moffset = 1) {               
+    _moffset = _moffset >= 0 ? DIRP : DIRN;  // 限制正反方向值 1、-1
+    _mspeed = _mspeed * _moffset;
+
+    if (_mspeed > 0) {
+        setPin(_in1Pin, _mspeed, 0);
+        setPin(_in2Pin, 0, 0);
+    } else if (_mspeed < 0) {
+        setPin(_in1Pin, 0, 0);
+        setPin(_in2Pin, 0 -_mspeed, 0);
+    } else {
+        setPin(_in1Pin, 0, 0);
+        setPin(_in2Pin, 0, 0);
+        // setPin(_in1Pin, 4096, 0);
+        // setPin(_in2Pin, 4096, 0);
+    }
 }
 
 /*!
@@ -573,27 +571,16 @@ void MotorDriver::stopMotor(uint8_t _mNum) {
     }
 }
 
-
 /*!
  *  @brief 舵机控制 端口 S1-CH08 S2-CH09 S3-CH10 S4-CH11 S5-CH12
- *  @param _mNum: servo number, eg:S1 S2 S3 S4 S5;
+ *  @param _servoNum: servo number, eg:S1 S2 S3 S4 S5;
  *  @param _angle: servo angle, eg:0~180；（0~180度范围）
  */
-void MotorDriver::servoWrite(uint8_t _mNum, uint8_t _angle) {
+void MotorDriver::servoWrite(uint8_t _servoNum, uint16_t _angle) {
+    uint16_t angle;
+    angle = map(_angle, 0, 180, SERVOMIN, SERVOMAX);
     if (_TYPE_MODULE == YF_IIC_RZ) { // IIC_RZ7889 SERVO
-        if (_mNum == S1) {  // SERVO 1
-            setPin(_RZ_SERVO01, 4096, 0);
-        } else if (_mNum == S2) {  // SERVO 2
-            setPin(_RZ_SERVO02, 4096, 0);
-        } else if (_mNum == S3) {  // SERVO 3
-            setPin(_RZ_SERVO03, 4096, 0);
-        } else if (_mNum == S4) {  // SERVO 4
-            setPin(_RZ_SERVO04, 4096, 0);
-        } else if (_mNum == S5) {  // SERVO 5
-            setPin(_RZ_SERVO05, 4096, 0);
-        } else {
-            /* code */
-        }
+        setPWM(_servoNum, 0, angle);
     }
 }
 
