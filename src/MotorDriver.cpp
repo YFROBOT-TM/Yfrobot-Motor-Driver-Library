@@ -12,6 +12,7 @@
  *  V0.0.5 IIC driver initialize pin
  *  V0.0.6 IIC driver RZ7889
  *  V0.0.7 IIC driver RZ7889 - Servo control
+ *  V0.0.8 IIC driver RZ7889 - Servo control example bug
  */
 
 #include <Arduino.h>

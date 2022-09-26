@@ -36,17 +36,17 @@ void setup() {
 
 void loop() {
 
-  motorDriver.servoSXWrite(S1, 0);
-  motorDriver.servoSXWrite(S2, 0);
-  motorDriver.servoSXWrite(S3, 0);
-  motorDriver.servoSXWrite(S4, 0);
-  motorDriver.servoSXWrite(S5, 0);
+  motorDriver.servoWrite(S1, 0);
+  motorDriver.servoWrite(S2, 0);
+  motorDriver.servoWrite(S3, 0);
+  motorDriver.servoWrite(S4, 0);
+  motorDriver.servoWrite(S5, 0);
   delay(1500);
-  motorDriver.servoSXWrite(S1, 180);
-  motorDriver.servoSXWrite(S2, 180);
-  motorDriver.servoSXWrite(S3, 180);
-  motorDriver.servoSXWrite(S4, 180);
-  motorDriver.servoSXWrite(S5, 180);
+  motorDriver.servoWrite(S1, 180);
+  motorDriver.servoWrite(S2, 180);
+  motorDriver.servoWrite(S3, 180);
+  motorDriver.servoWrite(S4, 180);
+  motorDriver.servoWrite(S5, 180);
   delay(1500);
 
   motorDriver.setSingleMotor(M1, 4096);  // 电机M1全速正转
