@@ -238,3 +238,15 @@ Methods：
 驱动所有电机，参数：电机速度 -255 ~ 255
 
 `motorDriver.setAllMotor(128); // 电机M1/M2/M3/M4 50%反转`
+
+
+#### 库版本说明：
+
+*  V0.0.9 修复MotorDriver IIC RZ例程在ESP32主板下编译错误
+*  V0.0.8 IIC driver RZ7889 - Servo control example bug
+*  V0.0.7 IIC driver RZ7889 - Servo control
+*  V0.0.6 IIC driver RZ7889
+*  V0.0.5 IIC driver initialize pin
+......
+*  V0.0.2 ...... 
+*  V0.0.1 ...... 
