@@ -2,7 +2,7 @@
   Valon motor Control - Valon 控制电机
   
   motor driver library: https://github.com/YFROBOT-TM/Yfrobot-Motor-Driver-Library
-  Valon : https://item.taobao.com/item.htm?id=623336047525
+  Valon : https://item.taobao.com/item.htm?id=622871845399
   
   ----------------------------------------------------------------
   This example code is in the public domain.
