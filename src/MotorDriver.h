@@ -108,6 +108,9 @@ extern uint8_t SerialDebug;  // 外部访问 串口使能变量
 #define S3 YF_PCA9685_CH10  // SERVO 03
 #define S4 YF_PCA9685_CH11  // SERVO 04
 #define S5 YF_PCA9685_CH12  // SERVO 05
+#define S6 YF_PCA9685_CH13  // SERVO 06
+#define S7 YF_PCA9685_CH14  // SERVO 07
+#define S8 YF_PCA9685_CH15  // SERVO 08
 
 #define SERVOMIN  102 // This is the 'minimum' pulse length count (out of 4096)
 #define SERVOMAX  512 // This is the 'maximum' pulse length count (out of 4096)

@@ -52,7 +52,7 @@ Methods：
 
 `motorDirver.stopMotor(MAll);  // 电机M1/M2/M3/M4 刹车`
 
-S1 S2 S3 S4 S5 舵机控制初始化频率
+S1 S2 S3 S4 S5 (S6-S8) 舵机控制初始化频率
 
 `motorDriver.setPWMFreq(50); // 控制舵机时，需要设置PWM频率 ~50`
 
@@ -242,6 +242,7 @@ Methods：
 
 #### 库版本说明：
 
+*  V0.1.0 新增IIC_RZ7889模式下，PCA9685 舵机S6S7S8支持(实际硬件未引出)
 *  V0.0.9 修复MotorDriver IIC RZ例程在ESP32主板下编译错误
 *  V0.0.8 IIC driver RZ7889 - Servo control example bug
 *  V0.0.7 IIC driver RZ7889 - Servo control

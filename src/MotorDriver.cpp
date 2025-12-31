@@ -573,8 +573,8 @@ void MotorDriver::stopMotor(uint8_t _mNum) {
 }
 
 /*!
- *  @brief 舵机控制 端口 S1-CH08 S2-CH09 S3-CH10 S4-CH11 S5-CH12
- *  @param _servoNum: servo number, eg:S1 S2 S3 S4 S5;
+ *  @brief 舵机控制 端口 S1-CH08 S2-CH09 S3-CH10 S4-CH11 S5-CH12 S6-CH13 S7-CH14 S8-CH15
+ *  @param _servoNum: servo number, eg:S1 S2 S3 S4 S5 S6 S7 S8;
  *  @param _angle: servo angle, eg:0~180；（0~180度范围）
  */
 void MotorDriver::servoWrite(uint8_t _servoNum, uint16_t _angle) {
