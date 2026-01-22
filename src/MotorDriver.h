@@ -26,8 +26,12 @@
 #define YF_IIC_RZ 6  // yfrobot PCA9685 IIC RZ7889 4路电机驱动模块
 #define YF_VALON 8   // yfrobot valon 小车 drv8838x2
 #define YF_4WDMW 9   // yfrobot 4wd 麦轮小车 drv8838x4
+#define YF_4WDMW_V6 10   // yfrobot 4wd 麦轮小车 PCA9685 IIC RZ7889
 
-extern uint8_t SerialDebug;  // 外部访问 串口使能变量
+// 只有当用户未定义SerialDebug时才使用默认值
+#ifndef SerialDebug
+#define SerialDebug 0
+#endif
 
 /*************** yfrobot PCA9685 IIC 4路电机驱动模块 参数 *****************/
 // REGISTER ADDRESSES
@@ -167,6 +171,9 @@ class MotorDriver {
   // PCA9685 SERVO (V2-RZ7889)
   void servoWrite(uint8_t _servoNum, uint16_t _angle);
 
+  // PCA9685 初始化所有引脚
+  void initPCA9685Pins();
+
   // MD 
   unsigned int getMotorCurrent();
 
@@ -196,6 +203,7 @@ class MotorDriver {
   uint8_t _M4PWM;  // 电机M4 PWM
   
   // PCA9685 IIC 4路电机驱动模块-RZ7889 iic 通道
+  // 20260108 更新 麦轮小车4WD V4板板共用下列参数
   uint8_t _RZ_M1IN1;  // 电机M1 输入1
   uint8_t _RZ_M1IN2;  // 电机M1 输入2
   uint8_t _RZ_M2IN1;  // 电机M2 输入1

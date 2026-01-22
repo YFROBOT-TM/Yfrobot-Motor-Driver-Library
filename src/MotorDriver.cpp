@@ -59,7 +59,6 @@ MotorDriver::MotorDriver(uint8_t type) {
 
   } else if (_TYPE_MODULE == YF_IIC_RZ) {
     setAddress(PCA9685_I2C_ADDRESS);
-    // begin();
     _OFFSETM1 = DIRP;
     _OFFSETM2 = DIRP;
     _OFFSETM3 = DIRP;
@@ -72,7 +71,20 @@ MotorDriver::MotorDriver(uint8_t type) {
     _RZ_M3IN2 = YF_PCA9685_CH6;    // RZ7889 电机M3 输入2
     _RZ_M4IN1 = YF_PCA9685_CH5;    // RZ7889 电机M4 输入1
     _RZ_M4IN2 = YF_PCA9685_CH4;    // RZ7889 电机M4 输入2
-    
+  } else if (_TYPE_MODULE == YF_4WDMW_V6) {
+    setAddress(PCA9685_I2C_ADDRESS);
+    _OFFSETM1 = DIRP;
+    _OFFSETM2 = DIRP;
+    _OFFSETM3 = DIRP;
+    _OFFSETM4 = DIRP;
+    _RZ_M1IN1 = YF_4WDMWV4_M1DIR_PCA9685_CH0;    // RZ7889 电机M1 输入1
+    _RZ_M1IN2 = YF_4WDMWV4_M1PWM_PCA9685_CH1;    // RZ7889 电机M1 输入2
+    _RZ_M2IN1 = YF_4WDMWV4_M2DIR_PCA9685_CH2;    // RZ7889 电机M2 输入1
+    _RZ_M2IN2 = YF_4WDMWV4_M2PWM_PCA9685_CH3;    // RZ7889 电机M2 输入2
+    _RZ_M3IN1 = YF_4WDMWV4_M3DIR_PCA9685_CH4;    // RZ7889 电机M3 输入1
+    _RZ_M3IN2 = YF_4WDMWV4_M3PWM_PCA9685_CH5;    // RZ7889 电机M3 输入2
+    _RZ_M4IN1 = YF_4WDMWV4_M4DIR_PCA9685_CH6;    // RZ7889 电机M4 输入1
+    _RZ_M4IN2 = YF_4WDMWV4_M4PWM_PCA9685_CH7;    // RZ7889 电机M4 输入2
   } else if (_TYPE_MODULE == YF_VALON) {
     _OFFSETA = DIRN;
     _OFFSETB = DIRN;
@@ -201,11 +213,16 @@ void MotorDriver::motorConfig(int8_t offsetAll) {
     _OFFSETM2 = offsetAll;
     _OFFSETM3 = offsetAll;
     _OFFSETM4 = offsetAll;
-  } if (_TYPE_MODULE == YF_IIC_RZ) {
+  } else if (_TYPE_MODULE == YF_IIC_RZ) {
     _OFFSETM1 = offsetAll;
     _OFFSETM2 = offsetAll;
     _OFFSETM3 = offsetAll;
     _OFFSETM4 = offsetAll;
+  } else if (_TYPE_MODULE == YF_4WDMW_V6) {
+    _OFFSETM1 = offsetAll;
+    _OFFSETM2 = offsetAll*DIRN;
+    _OFFSETM3 = offsetAll;
+    _OFFSETM4 = offsetAll*DIRN;
   } else if (_TYPE_MODULE == YF_L298P || _TYPE_MODULE == YF_PMR3 ) {
     _OFFSETA = offsetAll;
     _OFFSETB = offsetAll;
@@ -256,11 +273,17 @@ void MotorDriver::motorConfig(int8_t offsetM1, int8_t offsetM2, int8_t offsetM3,
     _OFFSETM3 = offsetM3;
     _OFFSETM4 = offsetM4;
     setAllMotor(0);
-  } if (_TYPE_MODULE == YF_IIC_RZ) {
+  } else if (_TYPE_MODULE == YF_IIC_RZ) {
     _OFFSETM1 = offsetM1;
     _OFFSETM2 = offsetM2;
     _OFFSETM3 = offsetM3;
     _OFFSETM4 = offsetM4;
+    setAllMotor(0);
+  } else if (_TYPE_MODULE == YF_4WDMW_V6) {
+    _OFFSETM1 = offsetM1;
+    _OFFSETM2 = offsetM2*DIRN;
+    _OFFSETM3 = offsetM3;
+    _OFFSETM4 = offsetM4*DIRN;
     setAllMotor(0);
   } else if (_TYPE_MODULE == YF_4WDMW) {
     _OFFSETM1 = offsetM1*DIRN;
@@ -315,7 +338,7 @@ void MotorDriver::setMotor(int16_t _mspeed) {
  */
 void MotorDriver::setMotor(int16_t speedA, int16_t speedB) {
   if (_TYPE_MODULE == YF_L298P || _TYPE_MODULE == YF_PMR3 || _TYPE_MODULE == YF_VALON) {
-    if (SerialDebug == 1) Serial.println("Driver Motor - L298P/PMR3/valon");
+    if (SerialDebug) Serial.println("Driver Motor - L298P/PMR3/valon");
 
     speedA = min((int)speedA, 255);
     speedA = max(-255, (int)speedA);
@@ -412,7 +435,7 @@ void MotorDriver::setSingleMotor(uint8_t _mNum, int16_t _mspeed) {
       driverOneMotor_IIC(_M4IN1, _M4IN2, _M4PWM, _mspeed, _OFFSETM4);
     } else {
 #ifdef ENABLE_DEBUG_OUTPUT
-      Serial.print("Error: Motor number error.");
+      Serial.print("IIC_TB Error: Motor number error.");
 #endif
     }
   } else if (_TYPE_MODULE == YF_IIC_RZ) { // IIC_RZ7889
@@ -426,7 +449,21 @@ void MotorDriver::setSingleMotor(uint8_t _mNum, int16_t _mspeed) {
       driverOneMotor_IIC_RZ(_RZ_M4IN1, _RZ_M4IN2, _mspeed, _OFFSETM4);
     } else {
 #ifdef ENABLE_DEBUG_OUTPUT
-      Serial.print("Error: Motor number error.");
+      Serial.print("IIC_RZ Error: Motor number error.");
+#endif
+    }
+  } else if (_TYPE_MODULE == YF_4WDMW_V6) { // 4WD麦轮小车 V4 IIC_RZ7889
+    if (_mNum == M1) { // MOTOR 1
+      driverOneMotor_IIC_RZ(_RZ_M1IN1, _RZ_M1IN2, _mspeed, _OFFSETM1);
+    } else if (_mNum == M2) { // MOTOR 2
+      driverOneMotor_IIC_RZ(_RZ_M2IN1, _RZ_M2IN2, _mspeed, _OFFSETM2);
+    } else if (_mNum == M3) { // MOTOR 3
+      driverOneMotor_IIC_RZ(_RZ_M3IN1, _RZ_M3IN2, _mspeed, _OFFSETM3);
+    } else if (_mNum == M4) { // MOTOR 4
+      driverOneMotor_IIC_RZ(_RZ_M4IN1, _RZ_M4IN2, _mspeed, _OFFSETM4);
+    } else {
+#ifdef ENABLE_DEBUG_OUTPUT
+      Serial.print("4WD V4 Error: Motor number error.");
 #endif
     }
   } else if (_TYPE_MODULE == YF_4WDMW) {
@@ -452,7 +489,7 @@ void MotorDriver::setSingleMotor(uint8_t _mNum, int16_t _mspeed) {
 void MotorDriver::setMotor(int16_t speedM1, int16_t speedM2, int16_t speedM3,
                            int16_t speedM4) {
   if (_TYPE_MODULE == YF_IIC_TB) {
-    if (SerialDebug == 1) Serial.println("Driver Motor - YF_IIC_TB");
+    if (SerialDebug) Serial.println("Driver Motor - YF_IIC_TB");
     // MOTOR 1
     setSingleMotor(M1, speedM1);
     // MOTOR 2
@@ -462,7 +499,17 @@ void MotorDriver::setMotor(int16_t speedM1, int16_t speedM2, int16_t speedM3,
     // MOTOR 4
     setSingleMotor(M4, speedM4);
   } else if (_TYPE_MODULE == YF_IIC_RZ) { // IIC_RZ7889
-    if (SerialDebug == 1) Serial.println("Driver Motor - YF_IIC_RZ");
+    if (SerialDebug) Serial.println("Driver Motor - YF_IIC_RZ");
+    // MOTOR 1
+    setSingleMotor(M1, speedM1);
+    // MOTOR 2
+    setSingleMotor(M2, speedM2);
+    // MOTOR 3
+    setSingleMotor(M3, speedM3);
+    // MOTOR 4
+    setSingleMotor(M4, speedM4);
+  } else if (_TYPE_MODULE == YF_4WDMW_V6) { // 4WD麦轮小车 V4 IIC_RZ7889
+    if (SerialDebug) Serial.println("Driver Motor - YF_4WDMW_V6");
     // MOTOR 1
     setSingleMotor(M1, speedM1);
     // MOTOR 2
@@ -496,6 +543,15 @@ void MotorDriver::setAllMotor(int16_t speedall) {
     // MOTOR 4
     setSingleMotor(M4, speedall);
   } else if (_TYPE_MODULE == YF_IIC_RZ) { // IIC_RZ7889
+    // MOTOR 1
+    setSingleMotor(M1, speedall);
+    // MOTOR 2
+    setSingleMotor(M2, speedall);
+    // MOTOR 3
+    setSingleMotor(M3, speedall);
+    // MOTOR 4
+    setSingleMotor(M4, speedall);
+  } else if (_TYPE_MODULE == YF_4WDMW_V6) { // 4WD麦轮小车 V4 IIC_RZ7889
     // MOTOR 1
     setSingleMotor(M1, speedall);
     // MOTOR 2
@@ -569,6 +625,31 @@ void MotorDriver::stopMotor(uint8_t _mNum) {
         } else {
             /* code */
         }
+    } else if (_TYPE_MODULE == YF_4WDMW_V6) { // 4WD麦轮小车 V4 IIC_RZ7889
+        if (_mNum == M1) {  // MOTOR 1
+            setPin(_RZ_M1IN1, 4096, 0);
+            setPin(_RZ_M1IN2, 4096, 0);
+        } else if (_mNum == M2) {  // MOTOR 2
+            setPin(_RZ_M2IN1, 4096, 0);
+            setPin(_RZ_M2IN2, 4096, 0);
+        } else if (_mNum == M3) {  // MOTOR 3
+            setPin(_RZ_M3IN1, 4096, 0);
+            setPin(_RZ_M3IN2, 4096, 0);
+        } else if (_mNum == M4) {  // MOTOR 4
+            setPin(_RZ_M4IN1, 4096, 0);
+            setPin(_RZ_M4IN2, 4096, 0);
+        } else if (_mNum == MAll) {  // MOTOR 1 2 3 4
+            setPin(_RZ_M1IN1, 4096, 0);
+            setPin(_RZ_M1IN2, 4096, 0);
+            setPin(_RZ_M2IN1, 4096, 0);
+            setPin(_RZ_M2IN2, 4096, 0);
+            setPin(_RZ_M3IN1, 4096, 0);
+            setPin(_RZ_M3IN2, 4096, 0);
+            setPin(_RZ_M4IN1, 4096, 0);
+            setPin(_RZ_M4IN2, 4096, 0);
+        } else {
+            /* code */
+        }
     }
 }
 
@@ -580,7 +661,7 @@ void MotorDriver::stopMotor(uint8_t _mNum) {
 void MotorDriver::servoWrite(uint8_t _servoNum, uint16_t _angle) {
     uint16_t angle;
     angle = map(_angle, 0, 180, SERVOMIN, SERVOMAX);
-    if (_TYPE_MODULE == YF_IIC_RZ) { // IIC_RZ7889 SERVO
+    if (_TYPE_MODULE == YF_IIC_RZ || _TYPE_MODULE == YF_4WDMW_V6) { // IIC_RZ7889 SERVO
         setPWM(_servoNum, 0, angle);
     }
 }
@@ -594,7 +675,7 @@ void MotorDriver::sleep() {
     uint8_t sleep = awake | MODE1_SLEEP;  // set sleep bit high
     write8(PCA9685_MODE1, sleep);
     delay(5);  // wait until cycle ends for sleep to be active
-  } else if (_TYPE_MODULE == YF_IIC_RZ) {
+  } else if (_TYPE_MODULE == YF_IIC_RZ || _TYPE_MODULE == YF_4WDMW_V6) { // PCA9685
     uint8_t awake = read8(PCA9685_MODE1);
     uint8_t sleep = awake | MODE1_SLEEP;  // set sleep bit high
     write8(PCA9685_MODE1, sleep);
@@ -613,7 +694,7 @@ void MotorDriver::wakeup() {
     uint8_t sleep = read8(PCA9685_MODE1);
     uint8_t wakeup = sleep & ~MODE1_SLEEP;  // set sleep bit low
     write8(PCA9685_MODE1, wakeup);
-  } else if (_TYPE_MODULE == YF_IIC_RZ) {
+  } else if (_TYPE_MODULE == YF_IIC_RZ || _TYPE_MODULE == YF_4WDMW_V6) { // PCA9685
     uint8_t sleep = read8(PCA9685_MODE1);
     uint8_t wakeup = sleep & ~MODE1_SLEEP;  // set sleep bit low
     write8(PCA9685_MODE1, wakeup);

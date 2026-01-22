@@ -47,6 +47,9 @@ void MotorDriver::begin(uint8_t prescale) {
   }
   // set the default internal frequency
   setOscillatorFrequency(FREQUENCY_OSCILLATOR);
+  
+  // 初始化所有PCA9685引脚，确保所有电机都停止转动
+  initPCA9685Pins();
 }
 
 /*!
@@ -306,4 +309,14 @@ void MotorDriver::write8(uint8_t addr, uint8_t d) {
 /*******************************************************************************
 ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑yfrobot PCA9685 IIC 4路电机驱动模块 专用函数↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 *******************************************************************************/
+
+/*!
+ *  @brief  初始化PCA9685的所有引脚，确保所有电机都停止转动
+ */
+void MotorDriver::initPCA9685Pins() {
+  // 将所有16个PWM通道设置为0
+  for (uint8_t i = 0; i < 16; i++) {
+    setPin(i, 0, false);
+  }
+}
 

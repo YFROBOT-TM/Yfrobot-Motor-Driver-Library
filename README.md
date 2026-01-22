@@ -4,6 +4,8 @@ YFROBOT Motor Driver Library for Arduino
 L298P / PM-R3 / MD01 / MD02 / MD03 / MD04 / MD_GB36 / IIC_MOTORDRIVER / IIC_MOTORDRIVER_RZ7889
 小车套件：
 VALON / 4WD Mecanum Wheel 
+小车套件：
+4WD Mecanum Wheel V6
 
 调用库：
 
@@ -240,8 +242,62 @@ Methods：
 `motorDriver.setAllMotor(128); // 电机M1/M2/M3/M4 50%反转`
 
 
+####  4WD 麦轮小车V6（mecanum wheel） 使用说明 使用说明：
+
+适用对象：[4WD麦轮小车](https://yfrobot.taobao.com)
+
+创建对象：
+
+`MotorDriver MD_4WDMW = MotorDriver(YF_4WDMW_V6);`
+
+Methods：
+
+初始化
+
+`MD_4WDMW.begin();`
+
+设置小车反向并初始化引脚， 参数：1-默认正方向为前进方向，-1-反向为前进方向
+
+`MD_4WDMW.motorConfig(1); // 所有小车方向并初始化引脚`
+
+驱动单个电机，参数：电机序号 M1,M2,M3,M4；电机速度 -4096 ~ 4096
+
+`MD_4WDMW.setSingleMotor(M1, 4096);   // M1电机全速正转`
+
+`MD_4WDMW.setSingleMotor(M1, 0);   // M1电机自由停止`
+
+驱动4路电机，参数：电机速度 -4096 ~ 4096
+
+`MD_4WDMW.setMotor(0, 4096, 2048, 1024);  // 电机M1自由停止,电机M2 全速正转,电机M3 50%正转,电机M4 25%正转`
+
+`MD_4WDMW.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4自由停止`
+
+`MD_4WDMW.setAllMotor(4096); // 电机M1/M2/M3/M4 全速正转`
+
+`MD_4WDMW.setAllMotor(0);  // 电机M1/M2/M3/M4自由停止`
+
+电机刹车/急停
+
+`MD_4WDMW.stopMotor(M1);  // 电机M1 刹车`
+
+`MD_4WDMW.stopMotor(MAll);  // 电机M1/M2/M3/M4 刹车`
+
+S1 S2 S3 S4 S5 (S6-S8) 舵机控制初始化频率
+
+`MD_4WDMW.setPWMFreq(50); // 控制舵机时，需要设置PWM频率 ~50`
+
+舵机控制 S1 舵机运行到0
+
+`MD_4WDMW.servoSXWrite(S1, 0);` 
+
+舵机控制 S1 舵机运行到180
+
+`MD_4WDMW.servoSXWrite(S1, 180);` 
+
+
 #### 库版本说明：
 
+*  V0.2.0 新增 4WD麦轮小车V6 支持，采用PCA9685方案驱动4路电机驱动，使用0~7端口，RZ7889电机驱动；舵机 S1~S4引出。 20260122
 *  V0.1.0 新增IIC_RZ7889模式下，PCA9685 舵机S6S7S8支持(实际硬件未引出)
 *  V0.0.9 修复MotorDriver IIC RZ例程在ESP32主板下编译错误
 *  V0.0.8 IIC driver RZ7889 - Servo control example bug

@@ -12,7 +12,7 @@
 #include <MotorDriver.h>
 
 #define MOTORTYPE YF_VALON
-uint8_t SerialDebug = 1; // 串口打印调试 0-否 1-是
+#define SerialDebug 1  // 串口打印调试 0-否 1-是
 
 // these constants are used to allow you to make your motor configuration
 // line up with function names like forward.  Value can be 1 or -1

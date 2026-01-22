@@ -20,6 +20,16 @@
 #define YF_PCA9685_CH6  6   // Channel 6
 #define YF_PCA9685_CH7  7   // Channel 7
 
+// 4路麦轮小车(N20版本)V4硬件 4路电机驱动 IIC PCA9685
+#define YF_4WDMWV4_M1DIR_PCA9685_CH0  0   // Channel 0
+#define YF_4WDMWV4_M1PWM_PCA9685_CH1  1   // Channel 1
+#define YF_4WDMWV4_M2DIR_PCA9685_CH2  2   // Channel 2
+#define YF_4WDMWV4_M2PWM_PCA9685_CH3  3   // Channel 3
+#define YF_4WDMWV4_M3DIR_PCA9685_CH4  4   // Channel 4
+#define YF_4WDMWV4_M3PWM_PCA9685_CH5  5   // Channel 5
+#define YF_4WDMWV4_M4DIR_PCA9685_CH6  6   // Channel 6
+#define YF_4WDMWV4_M4PWM_PCA9685_CH7  7   // Channel 7
+
 #define YF_PCA9685_CH8  8   // Channel 8
 #define YF_PCA9685_CH9  9   // Channel 9
 #define YF_PCA9685_CH10  10   // Channel 10
@@ -44,6 +54,7 @@
 #define YF_4WDMW_M3PWM_PIN 6
 #define YF_4WDMW_M4DIR_PIN 12
 #define YF_4WDMW_M4PWM_PIN 11
+
 
 // MD 01 02 03
 
