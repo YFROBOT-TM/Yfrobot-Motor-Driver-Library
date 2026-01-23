@@ -3,11 +3,11 @@
   Servo Control
 
   motor driver library: https://github.com/YFROBOT-TM/Yfrobot-Motor-Driver-Library
-  motor driver iic Introduction: http://www.yfrobot.com.cn/wiki/index.php?title=MotorDriver_IIC
-  motor driver iic：https://item.taobao.com/item.htm?id=626324653253
+  motor driver iic Introduction: https://pjfcckenlt.feishu.cn/wiki/LOE7wIExZiUhQkkxK1BcQwfZntg
+  motor driver iic：https://yfrobot.taobao.com
 
   YFROBOT ZL
-  01/08/2026
+  01/23/2026
  ****************************************************/
 #include <MotorDriver.h>
 
