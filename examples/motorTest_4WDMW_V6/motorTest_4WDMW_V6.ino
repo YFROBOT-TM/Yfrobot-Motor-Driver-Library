@@ -11,8 +11,8 @@
  ****************************************************/
 #include <MotorDriver.h>
 
-#define MOTORTYPE YF_4WDMW_V6   // 4路电机
-#define SerialDebug 1  // 串口打印调试 0-否 1-是
+#define MOTORTYPE YF_4WDMW_V6  // 4路电机
+#define SerialDebug 1          // 串口打印调试 0-否 1-是
 
 // 小车行驶方向设置
 // 1: 正常前进方向（默认）
@@ -26,10 +26,9 @@ void setup() {
   Serial.begin(9600);
   Serial.println("Motor Drive test!");
   MD_4WDMW.begin();
-  // 配置小车方向，默认1 正方向，-1为反方向
-  MD_4WDMW.motorConfig(directionConfig);
-  MD_4WDMW.setPWMFreq(50); // 控制舵机时，需要设置PWM频率 ~50
-  delay(1000);   // wait 1s
+  MD_4WDMW.motorConfig(directionConfig);  // 必要配置，配置小车方向，默认1 正方向，-1为反方向
+  MD_4WDMW.setPWMFreq(50);                // 控制舵机时必要，需要设置PWM频率 ~50
+  delay(1000);                            // wait 1s
   Serial.println("Start...");
 }
 
@@ -63,7 +62,7 @@ void loop() {
   MD_4WDMW.setSingleMotor(M4, 0);  // 电机M4自由停止
   delay(1000);
 
-  MD_4WDMW.setMotor(0, 4096, 2048, 1024); // 电机M1自由停止,电机M2 全速正转,电机M3 50%正转,电机M4 25%正转
+  MD_4WDMW.setMotor(0, 4096, 2048, 1024);  // 电机M1自由停止,电机M2 全速正转,电机M3 50%正转,电机M4 25%正转
   delay(500);
   MD_4WDMW.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4自由停止
   delay(500);
@@ -72,7 +71,7 @@ void loop() {
   MD_4WDMW.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4自由停止
   delay(1000);
 
-  MD_4WDMW.setAllMotor(4096);   // 电机M1/M2/M3/M4 全速正转
+  MD_4WDMW.setAllMotor(4096);  // 电机M1/M2/M3/M4 全速正转
   delay(500);
   MD_4WDMW.setAllMotor(0);  // 电机M1/M2/M3/M4 自由停止
   delay(500);
@@ -81,11 +80,11 @@ void loop() {
   MD_4WDMW.setAllMotor(0);  // 电机M1/M2/M3/M4 自由停止
   delay(1000);
 
-  MD_4WDMW.setMotor(4096, 4096, 4096, 4096);       // 电机M1/M2/M3/M4 全速正转
+  MD_4WDMW.setMotor(4096, 4096, 4096, 4096);  // 电机M1/M2/M3/M4 全速正转
   delay(500);
-  MD_4WDMW.stopMotor(M1);    // 电机M1 刹车
+  MD_4WDMW.stopMotor(M1);  // 电机M1 刹车
   delay(500);
-  MD_4WDMW.setMotor(-4096, -4096, -4096, -4096);   // 电机M1/M2/M3/M4 全速反转
+  MD_4WDMW.setMotor(-4096, -4096, -4096, -4096);  // 电机M1/M2/M3/M4 全速反转
   delay(500);
   MD_4WDMW.stopMotor(MAll);  // 电机M1/M2/M3/M4 刹车
   delay(1500);
