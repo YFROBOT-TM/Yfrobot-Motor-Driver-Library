@@ -3,9 +3,7 @@ YFROBOT Motor Driver Library for Arduino
 可用模块：
 L298P / PM-R3 / MD01 / MD02 / MD03 / MD04 / MD_GB36 / IIC_MOTORDRIVER / IIC_MOTORDRIVER_RZ7889
 小车套件：
-VALON / 4WD Mecanum Wheel 
-小车套件：
-4WD Mecanum Wheel V6
+VALON / 4WD Mecanum Wheel / 4WD Mecanum Wheel V7
 
 调用库：
 
@@ -16,43 +14,43 @@ VALON / 4WD Mecanum Wheel
 
 创建对象：
 
-`MotorDriver motorDirver = MotorDriver(YF_IIC_RZ);`
+`MotorDriver motorDriver = MotorDriver(YF_IIC_RZ);`
 
 Methods：
 
 初始化
 
-`motorDirver.begin();`
+`motorDriver.begin();`
 
 设置电机方向，参数：1-默认，-1-反向 (可选，不使用该函数，电机方向默认)
 
-`motorDirver.motorConfig(1, -1, 1, -1);// M1/M3 默认方向 M2/M4反向`
+`motorDriver.motorConfig(1, -1, 1, -1);// M1/M3 默认方向 M2/M4反向`
 
 设置所有电机反向， 参数：1-默认，-1-反向
 
-`motorDirver.motorConfig(1); // 所有电机默认方向`
+`motorDriver.motorConfig(1); // 所有电机默认方向`
 
 驱动单个电机，参数：电机序号 M1,M2,M3,M4；电机速度 -4096 ~ 4096
 
-`motorDirver.setSingleMotor(M1, 4096);   // M1电机全速正转`
+`motorDriver.setSingleMotor(M1, 4096);   // M1电机全速正转`
 
-`motorDirver.setSingleMotor(M1, 0);   // M1电机自由停止`
+`motorDriver.setSingleMotor(M1, 0);   // M1电机自由停止`
 
 驱动4路电机，参数：电机速度 -4096 ~ 4096
 
-`motorDirver.setMotor(0, 4096, 2048, 1024);  // 电机M1自由停止,电机M2 全速正转,电机M3 50%正转,电机M4 25%正转`
+`motorDriver.setMotor(0, 4096, 2048, 1024);  // 电机M1自由停止,电机M2 全速正转,电机M3 50%正转,电机M4 25%正转`
 
-`motorDirver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4自由停止`
+`motorDriver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4自由停止`
 
-`motorDirver.setAllMotor(4096); // 电机M1/M2/M3/M4 全速正转`
+`motorDriver.setAllMotor(4096); // 电机M1/M2/M3/M4 全速正转`
 
-`motorDirver.setAllMotor(0);  // 电机M1/M2/M3/M4自由停止`
+`motorDriver.setAllMotor(0);  // 电机M1/M2/M3/M4自由停止`
 
 电机刹车/急停
 
-`motorDirver.stopMotor(M1);  // 电机M1 刹车`
+`motorDriver.stopMotor(M1);  // 电机M1 刹车`
 
-`motorDirver.stopMotor(MAll);  // 电机M1/M2/M3/M4 刹车`
+`motorDriver.stopMotor(MAll);  // 电机M1/M2/M3/M4 刹车`
 
 S1 S2 S3 S4 S5 (S6-S8) 舵机控制初始化频率
 
@@ -72,47 +70,47 @@ S1 S2 S3 S4 S5 (S6-S8) 舵机控制初始化频率
 
 创建对象：
 
-`MotorDriver motorDirver = MotorDriver(YF_IIC_TB);`
+`MotorDriver motorDriver = MotorDriver(YF_IIC_TB);`
 
 Methods：
 
 初始化
 
-`motorDirver.begin();`
+`motorDriver.begin();`
 
 设置电机方向，参数：1-默认，-1-反向 (可选，不使用该函数，电机方向默认)
 
-`motorDirver.motorConfig(1, -1, 1, -1);// M1/M3 默认方向 M2/M4反向`
+`motorDriver.motorConfig(1, -1, 1, -1);// M1/M3 默认方向 M2/M4反向`
 
 设置所有电机反向， 参数：1-默认，-1-反向
 
-`motorDirver.motorConfig(1); // 所有电机默认方向`
+`motorDriver.motorConfig(1); // 所有电机默认方向`
 
 驱动单个电机，参数：电机序号 M1,M2,M3,M4；电机速度 -4096 ~ 4096
 
-`motorDirver.setSingleMotor(M1, 4096);   // M1电机全速正转`
+`motorDriver.setSingleMotor(M1, 4096);   // M1电机全速正转`
 
-`motorDirver.setSingleMotor(M1, 0);   // M1电机停止`
+`motorDriver.setSingleMotor(M1, 0);   // M1电机停止`
 
 驱动4路电机，参数：电机速度 -4096 ~ 4096
 
-`motorDirver.setMotor(0, 4096, 2048, 1024);  // 电机M1停止,电机M2 全速正转,电机M3 50%正转,电机M4 25%正转`
+`motorDriver.setMotor(0, 4096, 2048, 1024);  // 电机M1停止,电机M2 全速正转,电机M3 50%正转,电机M4 25%正转`
 
-`motorDirver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4停止`
+`motorDriver.setMotor(0, 0, 0, 0);  // 电机M1/M2/M3/M4停止`
 
-`motorDirver.setAllMotor(4096); // 电机M1/M2/M3/M4 全速正转`
+`motorDriver.setAllMotor(4096); // 电机M1/M2/M3/M4 全速正转`
 
-`motorDirver.setAllMotor(0);  // 电机M1/M2/M3/M4停止`
+`motorDriver.setAllMotor(0);  // 电机M1/M2/M3/M4停止`
 
 电机刹车/急停
 
-`motorDirver.stopMotor(M1);  // 电机M1 刹车`
+`motorDriver.stopMotor(M1);  // 电机M1 刹车`
 
-`motorDirver.stopMotor(MAll);  // 电机M1/M2/M3/M4 刹车`
+`motorDriver.stopMotor(MAll);  // 电机M1/M2/M3/M4 刹车`
 
 #### MotorDriver_MD 使用说明：
 
-适用对象：[YF_MD01](https://item.taobao.com/item.htm?id=537440531147) / [YF_MD02](https://item.taobao.com/item.htm?id=540604466130) / [YF_MD03](https://item.taobao.com/item.htm?id=541284819405) / [YF_MD04](https://item.taobao.com/item.htm?id=573547230434) / [YF_MDGP36](https://item.taobao.com/item.htm?id=626907019504)
+适用对象：[YF_MD01](https://item.taobao.com/item.htm?id=537440531147) / [YF_MD02](https://item.taobao.com/item.htm?id=540604466130) / [YF_MD03](https://item.taobao.com/item.htm?id=541284819405) / [YF_MD04](https://item.taobao.com/item.htm?id=573547230434) / [YF_MDGP36](https://item.taobao.com/item.htm?id=626907019504) / [YF_MDGP36](https://item.taobao.com/item.htm?id=626907019504)
 
 创建对象：
 
@@ -145,21 +143,21 @@ Methods：
 
 创建对象：
 
-`MotorDriver motorDirver = MotorDriver(YF_L298P);`
+`MotorDriver motorDriver = MotorDriver(YF_L298P);`
 
 Methods：
 
 设置电机方向，参数：1-默认，-1-反向 (可选，不使用该函数，电机方向默认)
 
-`motorDirver.motorConfig(1, 1);// A B电机默认方向`
+`motorDriver.motorConfig(1, 1);// A B电机默认方向`
 
-`motorDirver.motorConfig(1); // A B电机默认方向`
+`motorDriver.motorConfig(1); // A B电机默认方向`
 
 驱动电机，参数：电机速度 -255 ~ 255
 
-`motorDirver.setMotor(255, 128);  // A电机全速正转,B电机50%速度正转`
+`motorDriver.setMotor(255, 128);  // A电机全速正转,B电机50%速度正转`
 
-`motorDirver.setMotor(0, 0);  // AB电机停止`
+`motorDriver.setMotor(0, 0);  // AB电机停止`
 
 #### MotorDriver_PMR3 使用说明：
 
@@ -167,21 +165,21 @@ Methods：
 
 创建对象：
 
-`MotorDriver motorDirver = MotorDriver(YF_PMR3);`
+`MotorDriver motorDriver = MotorDriver(YF_PMR3);`
 
 Methods：
 
 设置电机方向，参数：1-默认，-1-反向 (可选，不使用该函数，电机方向默认)
 
-`motorDirver.motorConfig(1, 1);// A B电机默认方向`
+`motorDriver.motorConfig(1, 1);// A B电机默认方向`
 
-`motorDirver.motorConfig(1); // A B电机默认方向`
+`motorDriver.motorConfig(1); // A B电机默认方向`
 
 驱动电机，参数：电机速度 -255 ~ 255
 
-`motorDirver.setMotor(255, 128);  // A电机全速正转,B电机50%速度正转`
+`motorDriver.setMotor(255, 128);  // A电机全速正转,B电机50%速度正转`
 
-`motorDirver.setMotor(0, 0);  // AB电机停止`
+`motorDriver.setMotor(0, 0);  // AB电机停止`
 
 #### Valon-I 使用说明：
 
@@ -189,43 +187,43 @@ Methods：
 
 创建对象：
 
-`MotorDriver motorDirver = MotorDriver(YF_VALON);`
+`MotorDriver motorDriver = MotorDriver(YF_VALON);`
 
 Methods：
 
 设置电机方向，参数：1-默认，-1-反向 (可选，不使用该函数，电机方向默认)
 
-`motorDirver.motorConfig(1, 1);// 左右电机默认方向`
+`motorDriver.motorConfig(1, 1);// 左右电机默认方向`
 
-`motorDirver.motorConfig(1); // 所有电机默认方向`
+`motorDriver.motorConfig(1); // 所有电机默认方向`
 
 驱动电机，参数：电机速度 -255 ~ 255
 
-`motorDirver.setMotor(255, 128);  // 左电机全速正转,右电机 50%速度正转`
+`motorDriver.setMotor(255, 128);  // 左电机全速正转,右电机 50%速度正转`
 
-`motorDirver.setMotor(0, 0);  // 左右电机停止`
+`motorDriver.setMotor(0, 0);  // 左右电机停止`
 
-#### 4WD 麦轮小车（mecanum wheel） 使用说明：
+#### 4WD 麦轮小车V3（mecanum wheel） 使用说明：
 
 适用对象：[4WD麦轮小车](https://yfanmcu.taobao.com)
 
 创建对象：
 
-`MotorDriver motorDirver = MotorDriver(YF_4WDMW);`
+`MotorDriver motorDriver = MotorDriver(YF_4WDMW);`
 
 Methods：
 
 设置电机方向，参数：1-默认，-1-反向 (可选，不使用该函数，电机方向默认)
 
-`motorDirver.motorConfig(1, 1, 1, 1); // 4电机默认方向`
+`motorDriver.motorConfig(1, 1, 1, 1); // 4电机默认方向`
 
-`motorDirver.motorConfig(1); // 所有电机默认方向`
+`motorDriver.motorConfig(1); // 所有电机默认方向`
 
 驱动电机，参数：电机速度 -255 ~ 255
 
 `motorDriver.setMotor(0, 255, 128, 64); // 电机M1停止,电机M2 全速正转,电机M3 50%正转,电机M4 25%正转`
 
-`motorDirver.setMotor(0, 0, 0, 0); // 电机M1/M2/M3/M4停止`
+`motorDriver.setMotor(0, 0, 0, 0); // 电机M1/M2/M3/M4停止`
 
 驱动单电机，参数：电机速度 -255 ~ 255
 
@@ -242,13 +240,13 @@ Methods：
 `motorDriver.setAllMotor(128); // 电机M1/M2/M3/M4 50%反转`
 
 
-####  4WD 麦轮小车V6（mecanum wheel） 使用说明 使用说明：
+####  4WD 麦轮小车V7（mecanum wheel） 使用说明：
 
 适用对象：[4WD麦轮小车](https://yfrobot.taobao.com)
 
 创建对象：
 
-`MotorDriver MD_4WDMW = MotorDriver(YF_4WDMW_V6);`
+`MotorDriver MD_4WDMW = MotorDriver(YF_4WDMW_V7);`
 
 Methods：
 
@@ -288,15 +286,16 @@ S1 S2 S3 S4 S5 (S6-S8) 舵机控制初始化频率
 
 舵机控制 S1 舵机运行到0
 
-`MD_4WDMW.servoSXWrite(S1, 0);` 
+`MD_4WDMW.servoWrite(S1, 0);` 
 
 舵机控制 S1 舵机运行到180
 
-`MD_4WDMW.servoSXWrite(S1, 180);` 
+`MD_4WDMW.servoWrite(S1, 180);` 
 
 
 #### 库版本说明：
 
+*  V0.2.1 升级为 4WD麦轮小车V7 正式口径，统一使用 `YF_4WDMW_V7`，电机通道为 PCA9685 `LED0~LED7`，舵机通道为 `S1~S4`。 20260604
 *  V0.2.0 新增 4WD麦轮小车V6 支持，采用PCA9685方案驱动4路电机驱动，使用0~7端口，RZ7889电机驱动；舵机 S1~S4引出。 20260122
 *  V0.1.0 新增IIC_RZ7889模式下，PCA9685 舵机S6S7S8支持(实际硬件未引出)
 *  V0.0.9 修复MotorDriver IIC RZ例程在ESP32主板下编译错误

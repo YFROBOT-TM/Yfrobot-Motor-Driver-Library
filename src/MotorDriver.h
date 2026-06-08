@@ -26,7 +26,7 @@
 #define YF_IIC_RZ 6  // yfrobot PCA9685 IIC RZ7889 4路电机驱动模块
 #define YF_VALON 8   // yfrobot valon 小车 drv8838x2
 #define YF_4WDMW 9   // yfrobot 4wd 麦轮小车 drv8838x4
-#define YF_4WDMW_V6 10   // yfrobot 4wd 麦轮小车 PCA9685 IIC RZ7889
+#define YF_4WDMW_V7 10   // yfrobot 4wd 麦轮小车 V7 PCA9685 IIC RZ7889
 
 // 只有当用户未定义SerialDebug时才使用默认值
 #ifndef SerialDebug
